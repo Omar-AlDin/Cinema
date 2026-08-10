@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Home, Genres, Browse, Search, Details -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="tab-title"></title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <header>
+        <nav class="main-nav">
+            <a href="index.html" class="active-top">Home</a>
+            <a href="genres.html">Genres</a>
+            <a>Browse</a>
+            <a>Search</a>
+
+        </nav>
+    </header>
+    <main class="page-container">
+
+        <section class="details">
+            <div class="backdrop-wrapper">
+                <img class="backdrop" src="" alt="everything everywhere">
+                <div class="backdrop-fade"></div>
+            </div>
+            <img class="poster" src="" alt="everything everywhere">
+
+        </section>
+
+
+
+        <section class="details-bottom">
+
+            <aside class="left-column">
+
+
+                <div class="genres">
+                    <span class="genre-pill">Sci-Fi</span>
+                    <span class="genre-pill">Comedy</span>
+                    <span class="genre-pill">Adventure</span>
+                </div>
+
+                <button class="btn-trailer">▶ Watch Trailer</button>
+
+                <div class="status">
+                    <p class="date">Release Date: <span class="date-span"> October 23, 2026 (United States)</span></p>
+
+                    <p class="language">Original Language: <span class="language-span">English</span></p>
+
+                    <p class="budget">Budget: <span class="budget-span">$10,000,000 (estimated)</span></p>
+
+                    <p class="revenue">Revenue: <span class="revenue-span"> $395,141,751</span></p>
+
+
+                </div>
+            </aside>
+            <div class="right-column">
+                <div class="details-info">
+                    <h2 id="title">Everything Everywhere All at Once</h2>
+                    <div class="title-info">
+                        <span class="rating">⭐ <strong id="movie-rating">7.8</strong><span
+                                class="max-score">/10</span></span>
+                        <span class="dot">•</span>
+                        <span id="release-year">2022</span>
+                        <span class="dot">•</span>
+                        <span id="movie-certification">R</span>
+                        <span class="dot">•</span>
+                        <span id="runtime">2h 19m</span>
+                    </div>
+
+                    <p class="tagline">Life is full of infinite possibilities</p>
+                    <p class="overview">
+                        A wildly unconventional dummy paragraph of realistic length, so you can catch text-wrapping and
+                        spacing
+                        issues before real data arrives — not a short placeholder line, since that hides how long real
+                        overviews
+                        actually get.
+                    </p>
+
+                </div>
+                <div class="sub-crew">
+                    <p class="director">Directors: <span id="director-span">Daniel Kwan, Daniel Scheinert</span></p>
+
+                    <p class="writer">Writers: <span id="writer-span">Daniel Kwan, Daniel Scheinert</span></p>
+                </div>
+                <h2>Cast</h2>
+                <div class="cast-list">
+
+                    <div class="cast-member">
+
+                        <img src="cast-1.jpg" alt="Michelle Yeoh">
+                        <p class="actor-name">Michelle Yeoh</p>
+                        <p class="character-name">Evelyn Wang</p>
+                    </div>
+                    <div class="cast-member">
+                        <img class="cast-image" src="cast-2.jpg" alt="Ke Huy Quan">
+                        <p class="actor-name">Ke Huy Quan</p>
+                        <p class="character-name">Waymond Wang</p>
+                    </div>
+                    <div class="cast-member">
+                        <img src="cast-3.jpg" alt="Jenny Slate">
+                        <p class="actor-name">Jenny Slate</p>
+                        <p class="character-name">Debbie the Dog Mom</p>
+                    </div>
+
+                    <button class="btn-view-more">View More</button>
+
+                </div>
+
+                <section class="media-section">
+                    <div class="media-nav">
+
+                        <nav>
+                            <h2>Media</h2>
+                            <button class=" btn-popular" data-tab="popular">Most Popular</button>
+                            <button class="btn-videos" data-tab="videos">Videos</button>
+                            <button class="btn-backdrops" data-tab="backdrops">Backdrops</button>
+                            <button class="btn-posters" data-tab="posters">Posters</button>
+                        </nav>
+
+                    </div>
+                    <div class="media-scroll" id="media-container">
+
+                    </div>
+                </section>
+            </div>
+
+        </section>
+        <!-- repeat for however many cast dummy entries you want -->
+
+
+    </main>
+
+    <script src="cinema.js"></script>
+</body>
+
+</html>
