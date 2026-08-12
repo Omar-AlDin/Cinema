@@ -1,6 +1,6 @@
 'use strict'
 
-const accessToken = "YOUR_TMDB_API_KEY_HERE";
+const accessToken = '';
 
 const options = {
     method: 'GET',
@@ -10,6 +10,16 @@ const options = {
 
     }
 };
+
+
+//Variables
+const mediaState = {
+    backdrops: [],
+    videos: [],
+    posters: [],
+    popular: []
+}
+
 
 // DOM
 const movieGrid = document.querySelector('.movies-grid')
@@ -97,7 +107,7 @@ const imageUrl = (path, size = 'original') =>
 // DOM Function
 const backdropImage = document.querySelector('.backdrop');
 const posterImage = document.querySelector('.poster');
-
+const actorsContainer = document.querySelector('.cast-list');
 
 const renderDetails = function (movie) {
 
@@ -118,7 +128,15 @@ const renderDetails = function (movie) {
     document.querySelector('.overview').textContent = movie.overview
 
     document.querySelector('.date-span').textContent = formatedDate(movie, movie.origin_country[0]);
-    document.querySelector('#tab-title').textContent = `${movie.title} (${movie.release_date.split('-')[0]})`;
+
+
+    const movieReleaseDate = movie.release_date;
+
+    if (!movieReleaseDate) {
+        document.querySelector('#tab-title').textContent = `${movie.title}`;
+    } else {
+        document.querySelector('#tab-title').textContent = `${movie.title} (${movie.release_date.split('-')[0]})`;
+    }
 
     const movieLanguage = formatedLanguage(movie.original_language)
 
@@ -138,13 +156,9 @@ const renderDetails = function (movie) {
     document.querySelector('.revenue-span').textContent = formatedCurrency(movie.revenue) || "N/A";
 
 
-    //Button
-
 
     //Cast
     const actors = movie.credits?.cast?.slice(0, 10) || [];
-
-    const actorsContainer = document.querySelector('.cast-list');
 
     actorsContainer.innerHTML = '';
 
@@ -152,7 +166,7 @@ const renderDetails = function (movie) {
         const attore = document.createElement('div');
         attore.classList.add('cast-member');
 
-        const profileImage = act.profile_path ? `https://image.tmdb.org/t/p/w185${act.profile_path}` : `placeholder.jpg`;
+        const profileImage = imageUrl(act.profile_path, 'w185');
 
         attore.innerHTML =
             `<img src=${profileImage} alt="${act.name}" class = "cast-image">
@@ -170,11 +184,10 @@ const renderDetails = function (movie) {
     //Writers
     const writing = movie.credits?.crew?.filter(dep => dep.department === "Writing") || [];
 
-    const uniqueNames = writing.filter((person, index, arr) => arr.findIndex(p => p.id === person.id) === index);
-
+    const uniqueNames = writing?.filter((person, index, arr) => arr.findIndex(p => p.id === person.id) === index);
     const writerNames = uniqueNames.map(na => na.name).join(', ')
 
-    document.querySelector('#writer-span').textContent = writerNames;
+    document.querySelector('#writer-span').textContent = writerNames || "N/A";
 
     //Directors
     const director = movie.credits?.crew?.filter(d => d.job === "Director") || [];
@@ -185,7 +198,11 @@ const renderDetails = function (movie) {
     const directorNames = uniqueDirectors.map(n => n.name).join(', ');
     document.querySelector('#director-span').textContent = directorNames || "N/A";
 
+
 }
+
+
+
 
 //Fomrated Date Function
 const MONTHS = {
@@ -246,9 +263,109 @@ const formatedLanguage = function (lan) {
     }
 }
 
+
+
+
+
+
+
+//----Media assets fetch
+const mediaAsset = async function (movieId) {
+    const imagesUrl = `https://api.themoviedb.org/3/movie/${movieId}/images`;
+    const videosUrl = `https://api.themoviedb.org/3/movie/${movieId}/videos`;
+
+    const [imageRes, videoRes] = await Promise.all([
+        fetch(imagesUrl, options),
+        fetch(videosUrl, options)
+    ]);
+
+    const imageData = await imageRes.json();
+    const videoData = await videoRes.json();
+    console.log("ImageData", imageData)
+    console.log("VideoData", videoData)
+
+    mediaState.backdrops = imageData.backdrops || [];
+    mediaState.posters = imageData.posters || [];
+    mediaState.videos = videoData.results || [];
+
+
+
+}
+
+
+const media = document.querySelector('.media-scroll')
+
+
+//Render Backdrops
+const createBackdrops = function (backdrop, limit = 10) {
+
+    return backdrop.slice(0, limit).map(back => {
+        const img = document.createElement('img');
+        img.classList.add('media-container');
+        img.src = imageUrl(back.file_path, 'w780')
+        img.alt = "Backdrop";
+        console.log("Img", img);
+        return img;
+    });
+
+};
+
+//Render Videos
+const createVideos = function (videos, limit = 6) {
+    // console.log(filtered)
+    return videos.slice(0, limit).map(video => {
+        const vid = document.createElement('iframe')
+        vid.classList.add('media-container')
+        vid.src = `https://www.youtube.com/embed/${video.key}`;
+
+        vid.allowFullscreen = true;
+        vid.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+        vid.style.border = "none"; // Clean edge styling
+        vid.title = video.name;
+        return vid;
+    });
+}
+
+const renderBackdrops = function (backdrops) {
+    media.innerHTML = '';
+    createBackdrops(backdrops).forEach(back => media.append(back));
+}
+
+const renderVideos = function (vids) {
+    media.innerHTML = '';
+    createVideos(vids).forEach(vid => media.append(vid))
+}
+
+const renderPopular = function () {
+    media.innerHTML = '';
+    const popularVids = createVideos(mediaState.videos, 1);
+    const backdrops = createBackdrops(mediaState.backdrops, 2);
+    const popularPosters = createBackdrops(mediaState.posters, 1);
+    const all = [...popularVids, ...backdrops, ...popularPosters]
+
+    all.forEach(el => media.append(el));
+    mediaState.popular = all;
+
+
+
+}
+
+//Media nav bar
+const mediaButtons = document.querySelectorAll('.media-nav button');
+
+const setActive = function (clickedBtn) {
+    mediaButtons.forEach(btn => btn.classList.remove('active'));
+    clickedBtn.classList.add('active')
+}
+
+
 // -------- Main details page API ----------
 const detailsImage = async function () {
-    const moviesUrl = `https://api.themoviedb.org/3/movie/603692?append_to_response=release_dates,credits`;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const movieId = urlParams.get('id') || '1273221'
+
+    const moviesUrl = `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=release_dates,credits`;
     const movieRes = await fetch(moviesUrl, options)
     const movieData = await movieRes.json();
     console.log(movieData)
@@ -259,9 +376,103 @@ const detailsImage = async function () {
 
     backdropImage.src = imageUrl(movieData.backdrop_path)
     posterImage.src = imageUrl(movieData.poster_path)
-    renderDetails(movieData)
+    renderDetails(movieData);
 
+    await mediaAsset(movieId);
+    renderPopular();
+    setActive(mostPopular);
 
 }
 
+const btnBackdrops = document.querySelector('.btn-backdrops');
+const posters = document.querySelector('.btn-posters');
+const videos = document.querySelector('.btn-videos');
+
+const mostPopular = document.querySelector('.btn-popular');
+
+
+
+btnBackdrops.addEventListener('click', function () {
+    renderBackdrops(mediaState.backdrops)
+    setActive(btnBackdrops);
+})
+
+posters.addEventListener('click', function () {
+    media.innerHTML = '';
+
+    renderBackdrops(mediaState.posters);
+    setActive(posters);
+
+})
+
+
+videos.addEventListener('click', function () {
+    media.innerHTML = '';
+    renderVideos(mediaState.videos);
+    setActive(videos);
+
+})
+
+mostPopular.addEventListener('click', function () {
+    media.innerHTML = '';
+
+    renderPopular();
+    setActive(mostPopular);
+
+})
+
+
+
+//Modal DOM
+const trailerButton = document.querySelector('.btn-trailer');
+const modal = document.querySelector('.modal');
+const modalContent = document.querySelector('.modal-content');
+const overlay = document.querySelector('.overlay');
+const trailerFrame = document.querySelector('.trailer-frame');
+const btnCloseModal = document.querySelector('.close-modal');
+
+
+
+trailerButton.addEventListener('click', function () {
+
+    const mainTrailer = mediaState.videos.find(trail => trail.site === "YouTube" && trail.name === "Official Trailer" && trail.official === true) || mediaState.videos.find(trail => trail.site === "YouTube" && trail.official === true);
+
+    if (mainTrailer) {
+        modal.classList.remove('hidden');
+        console.log("trailer button")
+        trailerFrame.src = `https://www.youtube.com/embed/${mainTrailer.key}?autoplay=1`;
+    } else {
+        alert("No trailer found")
+    }
+
+});
+
+const closeModal = function () {
+    modal.classList.add('hidden');
+    trailerFrame.src = '';
+}
+
+btnCloseModal.addEventListener('click', closeModal);
+overlay.addEventListener('click', closeModal);
+
+
+modalContent.addEventListener('click', function (e) {
+    e.stopPropagation();
+})
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+    }
+})
+
+
 detailsImage();
+
+
+
+// media.addEventListener('wheel', function (e) {
+//     e.preventDefault();
+
+//     media.scrollLeft += e.deltaY;
+// })

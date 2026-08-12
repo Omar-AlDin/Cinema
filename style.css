@@ -93,7 +93,9 @@ nav a:hover {
     gap: 20px;
     position: relative;
     justify-content: center; */
-    position: relative
+    position: relative;
+
+
 }
 
 .backdrop {
@@ -107,20 +109,21 @@ nav a:hover {
 }
 
 .poster {
-    /* object-fit: cover;
-    border-radius: 3px;
-    position: absolute;
-    width: 230px;
-    display: flex;
-    margin-top: 300px;
-    margin-right: 600px; */
-    position: absolute;
+
+    /* position: absolute;
     bottom: -40px;
     left: 20px;
     width: 230px;
     border-radius: 10px;
+    object-fit: cover; */
+
+    width: 230px;
+    border-radius: 10px;
     object-fit: cover;
-    /* z-index: 2; */
+    position: relative;
+    z-index: 2;
+
+
 }
 
 
@@ -157,7 +160,8 @@ nav a:hover {
 
 .cast-member {
     text-align: center;
-    width: 100px
+    width: 100px;
+
 }
 
 .cast-list {
@@ -166,14 +170,13 @@ nav a:hover {
     flex-wrap: wrap;
     margin-bottom: 50px;
     align-items: flex-start;
+    overflow-x: auto;
 
 }
 
 
 .details-info {
     margin-top: 1px;
-    flex-wrap: wrap
-        /* padding-left: 270px; */
 }
 
 
@@ -193,13 +196,16 @@ nav a:hover {
 
 
 .left-column {
-    padding-top: 55px;
+    padding-top: 0px;
     /* text-wrap: wrap; */
     gap: 20px;
     display: flex;
     flex-direction: column;
     margin-left: 20px;
-    /* width: 200px; */
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    margin-top: -305px;
 }
 
 .genres {
@@ -256,9 +262,8 @@ nav a:hover {
 
 .right-column {
     flex: 1;
-    /* display: flex;
-    flex-wrap: wrap;
-    flex-direction: column; */
+    min-width: 0;
+
 }
 
 .title-info {
@@ -345,7 +350,7 @@ nav a:hover {
 
 }
 
-.media-nav button:active {
+.media-nav button.active {
 
     border-bottom: 2px solid rgb(245, 66, 66);
     padding-bottom: 2px;
@@ -378,4 +383,121 @@ nav a:hover {
 
 .btn-view-more:hover {
     color: rgb(252, 82, 82);
+}
+
+.media-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    overflow-x: auto;
+    /* overscroll-behavior: contain; */
+
+}
+
+.media-container {
+    flex-shrink: 0;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 420px;
+    height: 280px;
+    object-fit: cover;
+
+}
+
+.media-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+}
+
+.media-section {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    overflow-x: hidden;
+}
+
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    z-index: 2000;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.87);
+    /* backdrop-filter: blur(2px); */
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 3. Modal Box Container */
+.modal-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    background-color: #14181c;
+    border-radius: 12px;
+    padding: 20px;
+
+}
+
+/* 4. Modal Header Bar */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+/* 5. Close Button ("X") */
+.close-modal {
+    background: none;
+    border: none;
+    color: #a0a0a0;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+    color: #e50914;
+}
+
+.trailer-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    display: block;
+}
+
+.hidden {
+    display: none;
 }

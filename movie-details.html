@@ -27,7 +27,7 @@
                 <img class="backdrop" src="" alt="everything everywhere">
                 <div class="backdrop-fade"></div>
             </div>
-            <img class="poster" src="" alt="everything everywhere">
+            <!-- <img class="poster" src="" alt="everything everywhere"> -->
 
         </section>
 
@@ -36,7 +36,7 @@
         <section class="details-bottom">
 
             <aside class="left-column">
-
+                <img class="poster" src="" alt="everything everywhere">
 
                 <div class="genres">
                     <span class="genre-pill">Sci-Fi</span>
@@ -116,14 +116,14 @@
 
                         <nav>
                             <h2>Media</h2>
-                            <button class=" btn-popular" data-tab="popular">Most Popular</button>
+                            <button class="btn-popular" data-tab="popular">Most Popular</button>
                             <button class="btn-videos" data-tab="videos">Videos</button>
                             <button class="btn-backdrops" data-tab="backdrops">Backdrops</button>
                             <button class="btn-posters" data-tab="posters">Posters</button>
                         </nav>
 
                     </div>
-                    <div class="media-scroll" id="media-container">
+                    <div class="media-scroll">
 
                     </div>
                 </section>
@@ -134,7 +134,17 @@
 
 
     </main>
-
+    <div class="modal hidden">
+        <div class="overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Official Trailer</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <iframe class="trailer-frame" src="" allowFullscreen></iframe>
+            </div>
+        </div>
+    </div>
     <script src="cinema.js"></script>
 </body>
 
