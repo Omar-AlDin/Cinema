@@ -12,7 +12,6 @@
 
 <body>
     <div class="ambient-glow"></div>
-
     <header class="head-bar">
         <nav class="main-nav">
             <a href="index.html" class="active-top">Home</a>
@@ -22,9 +21,9 @@
 
         </nav>
     </header>
-    <div class="backdrop-wrapper">
-        <img class="backdrop" src="" alt="">
-        <div class="backdrop-fade"></div>
+    <div class="backdrop-wrapper-tv">
+        <img class="backdrop-tv" src="" alt="">
+        <div class="backdrop-fade-tv"></div>
     </div>
     <main class="page-container">
         <!-- <nav class="main-nav">
@@ -48,7 +47,7 @@
         <section class="details-bottom">
 
             <aside class="left-column">
-                <img class="poster hidden" src="" alt="">
+                <img class="poster" src="" alt="">
 
                 <div class="genres hidden">
                     <span class="genre-pill"></span>
@@ -63,9 +62,11 @@
 
                     <p class="language">Original Language: <span class="language-span"></span></p>
 
-                    <p class="budget">Budget: <span class="budget-span"></span></p>
+                    <p class="episode">Next Episode: <span class="next-episode"></span></p>
 
-                    <p class="revenue">Revenue: <span class="revenue-span"></span></p>
+                    <p class="networks">Networks: <span class="networks-span"></span></p>
+                    <p class="total-episodes">Total Episodes: <span class="total-episodes-span"></span></p>
+
 
 
                 </div>
@@ -74,13 +75,12 @@
                 <div class="details-info">
                     <h2 id="title"></h2>
                     <div class="title-info">
-                        <span class="rating">⭐ <strong id="movie-rating"></strong><span
-                                class="max-score">/10</span></span>
+                        <span class="rating">⭐ <strong id="rating-tv"></strong><span class="max-score">/10</span></span>
                         <span class="dot">•</span>
                         <span id="release-year"></span>
                         <span class="dot">•</span>
                         <span id="movie-certification"></span>
-                        <span class="dot">•</span>
+                        <span class="dot-time">•</span>
                         <span id="runtime"></span>
                     </div>
 
@@ -91,9 +91,24 @@
 
                 </div>
                 <div class="sub-crew">
-                    <p class="director">Directors: <span id="director-span"></span></p>
 
-                    <p class="writer">Writers: <span id="writer-span"></span></p>
+                    <p class="writer">Created By: <span id="creator-span"></span></p>
+                </div>
+                <button class="episode-btn">Episodes</button>
+
+                <div class="season-table">
+
+                    <div class="season-scroller">
+                        <h>Seasons</h>
+                        <button class="season-btn">S1</button>
+                        <button class="season-btn">S2</button>
+
+                    </div>
+                    <div class="season-episodes">
+                        <span class=season-number>S1 <span class="season-number">Episodes</span><strong
+                                id="ep-rating"></strong>
+                            8.1</strong></span>
+                    </div>
                 </div>
                 <h2>Cast</h2>
                 <div class="cast-list">

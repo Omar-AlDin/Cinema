@@ -8,13 +8,15 @@
     <title>Cinema Cafe</title>
     <link rel="stylesheet" href="style.css">
 
+
 </head>
 
 <body>
     <header class="head-bar">
+
         <nav class="main-nav">
             <a href="index.html">Home</a>
-            <a href="genres.html">Genres</a>
+            <a href="movie-details.html">Genres</a>
             <a href="browse.html" class="active-top">Browse</a>
             <a>Search</a>
 
@@ -23,14 +25,14 @@
     <main class="browse-container">
         <nav class="sub-nav">
 
-            <a href="browse.html">Movies</a>
-            <a href="tvshow.html" class="active">TV Shows</a>
+            <a href="browse.html" class="active">Movies</a>
+            <a href="tvshow.html">TV Shows</a>
 
         </nav>
         <section class="select-section">
             <div class="select-group">
-                <label for="tv-select-sort">Sort By</label>
-                <select id="tv-select-sort" autocomplete="off">
+                <label for="select-sort">Sort By</label>
+                <select id="select-sort" autocomplete="off">
                     <option value="popularity.desc">Most Popular</option>
                     <option value="vote_average.desc">Highest Rated</option>
                     <option value="primary_release_date.desc">Newest Releases</option>
@@ -39,15 +41,15 @@
             </div>
 
             <div class="select-group">
-                <label for="tv-genre-select">Genre</label>
-                <select id="tv-genre-select" autocomplete="off">
+                <label for="genre-select">Genre</label>
+                <select id="genre-select" autocomplete="off">
                     <option value="">All Genres</option>
                 </select>
             </div>
 
             <div class="select-group">
-                <label for="tv-year-sort">Year</label>
-                <select id="tv-year-sort" autocomplete="off">
+                <label for="year-sort">Year</label>
+                <select id="year-sort" autocomplete="off">
                     <option value="">All Years</option>
                     <option value="2026">2026</option>
                     <option value="2025">2025</option>
@@ -70,8 +72,8 @@
                 </select>
             </div>
             <div class="select-group">
-                <label for="tv-rating-select">Rating</label>
-                <select id="tv-rating-select" autocomplete="off">
+                <label for="rating-select">Rating</label>
+                <select id="rating-select" autocomplete="off">
                     <option value="">All Ratings</option>
                     <option value="9">9+ Stars</option>
 
@@ -82,31 +84,31 @@
             </div>
 
             <div class="select-group">
-                <label for="tv-language-select"></label>
-                <select id="tv-language-select" autocomplete="off">
-                    <option value="">Arabic + International</option>
+                <label for="language-select"></label>
+                <select id="language-select" autocomplete="off">
+                    <option value="">All Languages</option>
                     <option value="ar">Arabic</option>
                     <option value="en">International</option>
                 </select>
             </div>
         </section>
         <section class="trending">
-            <h2>Explore</h2>
-            <div class="tv-grid">
-
+            <!-- <h2>Trending Movies</h2> -->
+            <div class="movies-grid">
 
 
 
             </div>
-            <div class="tv-load-container">
-                <button id="tv-load-btn" style="display: none">Load More</button>
-            </div>
-            <div id="scroll-sentinel-tv"></div>
 
+            <div class="load-more-container">
+                <button id="load-more-btn" style="display: none;">Load More</button>
+            </div>
+            <div id="scroll-sentinel"></div>
         </section>
     </main>
 
     <script src="cinema.js"></script>
+
 </body>
 
 </html>
