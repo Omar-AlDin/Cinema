@@ -85,8 +85,6 @@ const observerOptions = {
 };
 
 const observer = new IntersectionObserver((entries) => {
-    // const entry = entries[0]
-    // console.log("entry", entry);
     entries.forEach(entry => {
         if (entry.isIntersecting)
             checkSentinel();
@@ -274,7 +272,7 @@ const checkSentinelTv = function () {
     if (numberOfTvPages <= currentTvPage) return;
     if (inView) {
 
-        if (currentTvPage < tvPagePause) {
+        if (currentTvPage <= tvPagePause) {
             currentTvPage++;
             tvImage(currentTvPage).then(checkSentinelTv); // recheck after render
         } else {
@@ -712,43 +710,88 @@ const renderDetailsTv = function (tv) {
 }
 
 
+let currentShowId = null;
+const seasonEpi = document.querySelector('.season-episodes');
+const seasonBtn = document.querySelector('.season-btn');
+
 
 const renderSeasonBtn = function (tv) {
     seasonScroller.innerHTML = '';
-    tv.seasons.forEach(sea => {
 
+    const firstRealSeason = tv.seasons.find(s => s.season_number > 0);
+    tv.seasons.forEach(sea => {
         if (sea.season_number === 0) return
         const seasonBtn = document.createElement('button');
         seasonBtn.classList.add('season-btn');
         seasonBtn.textContent = `S${sea.season_number}`
+        if (firstRealSeason && sea.season_number === firstRealSeason.season_number) {
+            seasonBtn.classList.add('active');
+        }
+
+
 
         seasonBtn.addEventListener('click', () => {
-            seasonNumber(sea.id, sea.season_number)
+            document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+            seasonBtn.classList.add('active');
+
+            loadSeason(currentShowId, sea.season_number)
 
         })
         seasonScroller.append(seasonBtn);
+
     });
 
+    //auto select first season episode
+    if (firstRealSeason) loadSeason(currentShowId, firstRealSeason.season_number)
 }
 
-const seasonepi = document.querySelector('.season-episodes');
 
 
-const seasonBtn = document.querySelector('.season-btn');
-const seasonEpi = document.querySelector('.season-episodes');
 
-// seasonBtn.addEventListener('click', function () {
 
-// })
-// //seasons link
-const seasonNumber = async function (tvId = 113962, season = 1) {
-    const seasonUrl = `https://api.themoviedb.org/3/tv/${tvId}/season/${season}`
-    const seasonRes = await fetch(seasonUrl, options);
-    const seasonData = await seasonRes.json();
-    console.log("season data", seasonData);
+const loadSeason = async function (tvId = 113962, season = 1) {
+    if (!seasonEpi) return;
+    seasonEpi.innerHTML = '<p>Loading episodes....</p>';
+    try {
+        const seasonUrl = `https://api.themoviedb.org/3/tv/${tvId}/season/${season}`
+        const seasonRes = await fetch(seasonUrl, options);
+        if (!seasonRes.ok) throw new Error(`HTTP error: ${seasonRes.status}`);
+        const seasonData = await seasonRes.json();
+        renderEpisode(seasonData);
+        console.log("season data", seasonData);
 
+    } catch (err) {
+        console.error(`Something went wrong: ${err.message}`)
+    }
 }
-// seasonNumber()
+loadSeason()
+
+
+const renderEpisode = function (seasonData) {
+    seasonEpi.innerHTML = '';
+    const episodes = seasonData.episodes || [];
+
+    episodes.forEach(ep => {
+        const image = ep.still_path ? imageUrl(ep.still_path, 'w500') : 'placeholder.jpg';
+        const rating = ep.vote_average ? ep.vote_average.toFixed(1) : 'N/A';
+
+        seasonEpi.insertAdjacentHTML('beforeend', `
+        <div class = "episode-card">
+<img class = "episode-still" src = "${image}" alt= "${ep.name}">
+<div class = "episode-info">
+<div class = "episode-header">
+<span class = "episode-number">${ep.episode_number}</span>
+<span class = "episode-rating"> ⭐ ${rating}</span>
+<span class = "episode-name"> ${ep.name}</span>
+</div>
+<p class = "episode-date"> ${nextEpisode(ep.air_date)} </p>
+<p class = "episode-overview"> ${ep.overview || 'No overview available'}</p>
+</div>
+        </div>
+        `
+        );
+    });
+}
 
 //Fomrated Date Function
 const MONTHS = {
@@ -952,25 +995,153 @@ const setActive = function (clickedBtn) {
 
 
 
+//---------------Search-------------
+
+const searchInput = document.querySelector('.input-search');
+const searchResults = document.querySelector('.search-results');
+const searchLoadBtn = document.querySelector('#search-load-more-btn');
+const searchSentinel = document.querySelector('#search-sentinel');
+
+
+let currentSearchPage = 1;
+let isSearchLoading = false;
+let searchPagePause = 5;
+let numberOfSearchPages = 0
+let currentSearchController = null;
+let currentQuery = '';
+const seenSearch = new Set();
+
+const checkSearchSentinel = function () {
+    if (!searchSentinel || !currentQuery || isSearchLoading) return;
+    if (currentSearchPage >= numberOfSearchPages) return
+
+    const rect = searchSentinel.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight + 300;
+
+    if (inView) {
+        if (currentSearchPage < searchPagePause) {
+            currentSearchPage++
+            fetchSearch(currentQuery, currentSearchPage).then(checkSearchSentinel);
+        } else {
+            if (searchLoadBtn) searchLoadBtn.style.display = 'block';
+        }
+    }
+};
+
+
+const observerSearch = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) checkSearchSentinel();
+    });
+}, observerOptions);
+
+if (searchSentinel) observerSearch.observe(searchSentinel);
+
+if (searchLoadBtn) {
+    searchLoadBtn.addEventListener('click', () => {
+        searchLoadBtn.style.display = 'none';
+        currentSearchPage++;
+        searchPagePause += 5;
+        fetchSearch(currentQuery, currentSearchPage);
+    });
+}
+
+
+const fetchSearch = async function (query, page = 1) {
+    if (isSearchLoading) return;
+    isSearchLoading = true;
+
+    const signal = currentSearchController ? currentSearchController.signal : undefined;
+    try {
+        const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}&page=${page}&include_adult=false`
+        const searchRes = await fetch(searchUrl, { ...options, signal });
+        if (!searchRes.ok) throw new Error(`HTTP response error ${searchRes.status}`);
+        const searchData = await searchRes.json();
+        numberOfSearchPages = searchData.total_pages;
+        searchData.results.forEach(item => {
+            if (item.media_type !== 'movie' && item.media_type !== 'tv') return;
+            if (!item.poster_path) return;
+            if (seenSearch.has(item.id + item.media_type)) return;
+            seenSearch.add(item.id + item.media_type);
+
+            let detailsPage;
+            let displayTitle;
+            if (item.media_type === 'tv') {
+                detailsPage = 'tv-details.html';
+                displayTitle = item.name;
+            } else if (item.media_type === 'movie') {
+                detailsPage = 'movie-details.html';
+                displayTitle = item.title
+
+            }
+            // else if(item.known_for_department === "Acting"){
+            //     detailsPage = 'profile.html';
+            // }
+            const link = document.createElement('a');
+            link.href = `${detailsPage}?id=${item.id}`;
+            link.classList.add('poster-link');
+            const image = document.createElement('img');
+            image.src = imageUrl(item.poster_path, 'w500');
+            image.alt = displayTitle;
+            link.append(image);
+            if (searchResults) searchResults.append(link);
+
+        })
 
 
 
+    } catch (err) {
+        if (err.name === 'AbortError') {
+            console.log('Search aborted due to new query.');
+            return;
+        }
+        console.error(`Something went wrong: ${err.message}`)
+    } finally {
+        isSearchLoading = false;
+    }
+}
+
+
+const runSearch = function (query) {
+    if (currentSearchController) currentSearchController.abort();
+    currentSearchController = new AbortController();
+
+    currentQuery = query.trim();
+    if (searchResults) searchResults.innerHTML = '';
+    seenSearch.clear();
+    currentSearchPage = 1;
+    searchPagePause = 5;
+    if (searchLoadBtn) searchLoadBtn.style.display = 'none';
+    if (!currentQuery) return;
+
+    fetchSearch(currentQuery, currentSearchPage).then(checkSearchSentinel);
+};
+
+let searchDebounceTimer = null;
+if (searchInput) {
+    searchInput.addEventListener('input', function (e) {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+            runSearch(e.target.value)
+        }, 400);
+    });
+}
 
 // -------- Main details page API ----------
 const detailsImage = async function () {
-
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('id') || '4232'
 
     if (isTv) {
         const tvUrl = `https://api.themoviedb.org/3/tv/${movieId}?append_to_response=credits,content_ratings`;
+        currentShowId = movieId;
+
         const tvRes = await fetch(tvUrl, options);
         const tvData = await tvRes.json();
         console.log("TV Data", tvData)
-        // const seasonUrl = `https://api.themoviedb.org/3/tv/${tvId}/season/${season}`
-        // const seasonRes = await fetch(seasonUrl, options);
-        // const seasonData = await seasonRes.json();
+
         if (backdropImageTv) {
+
             backdropImageTv.src = imageUrl(tvData.backdrop_path)
             backdropImageTv.alt = `${tvData.name} Backdrop`;
             document.querySelector('.ambient-glow').style.setProperty('--glow-image', `url(${imageUrl(tvData.backdrop_path)})`)
@@ -982,7 +1153,8 @@ const detailsImage = async function () {
 
         renderSeasonBtn(tvData);
 
-    } else {
+    } else if (moviePageContainer) {
+        // console.log("move grid")
         const moviesUrl = `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=release_dates,credits`;
         const movieRes = await fetch(moviesUrl, options)
 
@@ -1003,6 +1175,7 @@ const detailsImage = async function () {
         await mediaAsset(movieId);
         renderPopular();
         setActive(mostPopular);
+
     }
 }
 

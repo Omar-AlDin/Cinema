@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Home, Genres, Browse, Search, Details -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="tab-title">Search</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="ambient-glow"></div>
+    <header class="head-bar">
+        <nav class="main-nav">
+            <a href="index.html">Home</a>
+            <a href="genres.html">Genres</a>
+            <a href="browse.html">Browse</a>
+            <a href="search.html" class="active-top">Search</a>
+
+        </nav>
+    </header>
+
+    <main class="search-container">
+
+        <input class="input-search" autocomplete="off" type="text" placeholder="Search movies and TV shows">
+        <div class="search-results"></div>
+        <div class="load-more-container">
+            <button id="search-load-more-btn" style="display: none;">Load More</button>
+        </div>
+        <div id="search-sentinel"></div>
+    </main>
+
+    <script src="cinema.js"></script>
+</body>
+
+</html>
