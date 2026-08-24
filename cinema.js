@@ -107,6 +107,18 @@ if (loadButton) {
 
 }
 
+
+//Parama
+const urlParams = new URLSearchParams(window.location.search);
+const movieId = urlParams.get('id') || '4232'
+const keywordParam = urlParams.get('keyword');
+const labelParam = urlParams.get('label');
+
+if (keywordParam) {
+    currentFilters.keyword = keywordParam;
+}
+
+
 const handleFilter = function () {
     if (currentFetchController) {
         currentFetchController.abort();
@@ -135,7 +147,7 @@ const fetchMovies = async function (page = 1) {
     try {
         const isArabic = currentFilters.language === "ar";
 
-        const minVote = isArabic ? 5 : 30;
+        const minVote = isArabic ? 5 : (currentFilters.keyword ? 5 : 30);
         const effectiveMinRating = currentFilters.minRating || (isArabic ? '5.5' : '');
 
         let movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=${currentFilters.sortBy}&page=${page}&vote_count.gte=${minVote}&include_adult=false`;
@@ -143,6 +155,9 @@ const fetchMovies = async function (page = 1) {
 
         if (currentFilters.genre) {
             movieUrl += `&with_genres=${currentFilters.genre}`;
+        }
+        if (currentFilters.keyword) {
+            movieUrl += `&with_keywords=${currentFilters.keyword}`;
         }
         if (currentFilters.year) {
             movieUrl += `&primary_release_year=${currentFilters.year}`;
@@ -181,8 +196,6 @@ const fetchMovies = async function (page = 1) {
 
         console.log(movieData)
 
-
-        // })
 
     } catch (err) {
         if (err.name === 'AbortError') {
@@ -695,7 +708,7 @@ const renderDetailsTv = function (tv) {
     document.querySelector('.total-episodes-span').textContent = totalEpisodes
 
 
-    //networks
+    // networks
     const netSpan = document.querySelector('.networks');
     const network = tv.networks?.map(net => net.name).join(', ');
     if (network) {
@@ -703,6 +716,8 @@ const renderDetailsTv = function (tv) {
     } else {
         netSpan.style.display = 'none';
     };
+
+
 
 
 

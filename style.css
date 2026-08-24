@@ -14,13 +14,14 @@ body {
 
 .page-container {
     padding: 20px;
-    /* padding: 80px 20px 20px 20px; */
     max-width: 1300px;
+    /*intentionally narrower than other pages — looks best at this width */
     margin: 0 auto;
 }
 
 
 nav {
+    user-select: none;
     display: flex;
     gap: 15px;
     margin-bottom: 20px;
@@ -31,6 +32,7 @@ nav {
 }
 
 nav a {
+
     color: rgb(198, 203, 207);
     text-decoration: none;
     font-weight: 500;
@@ -54,6 +56,7 @@ nav a.active-top {
 }
 
 nav a:hover {
+
     color: rgb(241, 86, 86);
 }
 
@@ -537,19 +540,16 @@ nav a:hover {
 
 }
 
-.head-bar nav {
-    max-width: 1500px;
-}
 
 .main-nav {
-    max-width: 1300px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 15px 20px;
     /* background: transparent; */
 }
 
 .browse-container {
-    max-width: 1500px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
     padding-top: 20px;
@@ -693,12 +693,12 @@ nav a:hover {
 .search-container input {
     padding: 20px;
     text-align: center;
-    max-width: 1300px;
+    max-width: 1400px;
 
 }
 
 .search-container {
-    max-width: 1500px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
     padding-top: 20px;
@@ -808,11 +808,17 @@ nav a:hover {
 }
 
 
+.genre-section {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
 .genre-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
     padding: 20px;
+
 }
 
 .genre-card {
@@ -830,6 +836,8 @@ nav a:hover {
     cursor: pointer;
     user-select: none;
     will-change: transform;
+
+
 }
 
 .genre-card:hover {
@@ -858,7 +866,26 @@ nav a:hover {
 .genre-card.documentary .genre-title {
     font-size: 0.85rem;
     letter-spacing: -0.1px;
+    margin-right: -4px;
+
 }
+
+.genre-card.documentary-tv .card-img {
+    width: 51%;
+}
+
+.genre-card.documentary-tv .genre-title {
+    font-size: 0.85rem;
+    letter-spacing: -0.1px;
+    margin-right: -4px;
+
+}
+
+.genre-card.thriller-tv .genre-title {
+    font-size: 0.95rem;
+
+}
+
 
 .genre-card.animation .genre-title {
     font-size: 0.85rem;
@@ -886,6 +913,11 @@ nav a:hover {
     margin-right: 7px;
 }
 
+.genre-card.crime-tv .genre-title {
+    text-align: right;
+    margin-right: 10px;
+}
+
 .genre-card.action-tv .genre-title {
     font-size: 0.85rem;
     letter-spacing: -0.1px;
@@ -903,6 +935,34 @@ nav a:hover {
     object-position: center right;
 }
 
+.genre-card.animation-tv .genre-title {
+    font-size: 0.85rem;
+    letter-spacing: -0.1px;
+}
+
+
+.genre-card.slasher .card-img img {
+    object-position: center;
+}
+
+.genre-card.paranormal .card-img img {
+    object-position: center right;
+}
+
+.genre-card.monster .card-img img {
+    object-position: center;
+}
+
+/* .genre-card.comedy-horror .card-img img {
+    object-position: left;
+} */
+
+.genre-card.paranormal .genre-title {
+    font-size: 0.80rem;
+    letter-spacing: -0.2px;
+    text-align: right;
+    margin-right: -9px;
+}
 
 .card-img {
     position: absolute;
@@ -921,9 +981,7 @@ nav a:hover {
     height: 100%;
     object-fit: cover;
     pointer-events: none;
-    /* filter: contrast(1.15) saturate(1.15); */
-    /* image-rendering: -webkit-optimize-contrast;
-    transform: translateZ(0); */
+    /* user-select: none; */
     image-rendering: auto;
 
 }
@@ -961,4 +1019,26 @@ nav a:hover {
 
 .genre-section {
     margin-bottom: 2rem;
+}
+
+.genre-container a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+}
+
+.genre-breadcrumb {
+    padding: 12px 20px 0 20px;
+    font-size: 14px;
+    color: #a0a0a0;
+}
+
+.genre-breadcrumb a {
+    text-decoration: none;
+    color: #a0a0a0;
+    transition: color 0.2s ease
+}
+
+.genre-breadcrumb a:hover {
+    color: #e50914;
 }
