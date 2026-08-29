@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Home, Genres, Browse, Search, Details -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Cafe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+</head>
+
+<body>
+    <header class="head-bar">
+
+        <nav class="main-nav">
+            <a href="index.html" class="active-top">Home</a>
+            <a href="genres.html">Genres</a>
+            <a href="browse.html">Browse</a>
+            <a href="search.html">Search</a>
+
+        </nav>
+    </header>
+    <main class="movie-night-container">
+        <div class="backdrop-night">
+            <img src="movie-night.png" alt="Movie Night">
+            <div class="on-backdrop">
+                <h2>Bring People</h2>
+                <h2>Together Through</h2>
+                <h2 class="red">Great Movies</h2>
+                <p>Create a Movie Night, choose what you want to watch, <br>and invite others to join. Turn any place
+                    into a
+                    cinema experience.</p>
+
+
+            </div>
+        </div>
+
+
+        <div class="how-it-works">
+            <h1>How It Works</h1>
+            <p>Simple.Social.Cinematic.</p>
+            <div class="feature-cards-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="calendar-days"></i></div>
+                    <div class="feature-right">
+                        <h4>Create Your Event</h4>
+                        <p>Pick a movie, choose a date and place, and set it up in minutes.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="users"></i></div>
+                    <div class="feature-right">
+
+                        <h4>Invite Your Community</h4>
+                        <p>Share your Movie Night with friends, clubs or your campus.</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i data-lucide="play"></i></div>
+                    <div class="feature-right">
+
+                        <h4>Watch Together</h4>
+                        <p>Enjoy great movies with people who love cinema as much as you do.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+    <script src="cinema.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

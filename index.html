@@ -8,7 +8,6 @@
     <title>Cinema Cafe</title>
     <link rel="stylesheet" href="style.css">
 
-
 </head>
 
 <body>
@@ -22,22 +21,76 @@
 
         </nav>
     </header>
-    <main class="browse-container">
-        <nav class="sub-nav">
+    <main class="home-container">
 
-            <a href="index.html" class="active">Movies</a>
-            <a href="tvshow.html">TV Shows</a>
+        <section class="home-backdrop-section">
 
-        </nav>
-        <!-- <section class="trending">
-            <h2>Trending Movies</h2>
-            <div class="movies-grid">
+            <div class="home-backdrop">
+                <div class="hero-carousel">
+                    <div class="hero-slide active" style="background-image: url('')"></div>
 
+                </div>
+                <button class="hero-arrow hero-arrow-left" id="hero-prev" aria-label="Previous">‹</button>
+                <button class="hero-arrow hero-arrow-right" id="hero-next" aria-label="Next">›</button>
+                <div class="home-backdrop-fade"></div>
 
+                <div class="home-hero-info">
+                    <h1 id="hero-title"></h1>
+                    <p class="home-hero-overview" id="hero-overview">Loading....</p>
+                    <div class="title-info-back" id="hero-meta"></div>
+                    <div class="hero-actions">
+                        <button class="trailer-btn" id="hero-trailer-btn">▶ Watch Trailer</button>
+                        <a class="btn-details" id="hero-details-link" href="">ℹ More Info
+                        </a>
+                    </div>
+                </div>
 
             </div>
-        </section> -->
+
+        </section>
+        <section class="main-homepage">
+            <div class="popular-header">
+                <h2 class="home-section-title">Popular Now</h2>
+                <div class="toggle-btn">
+                    <button class="popular-tab active" data-type="movie">Movies</button>
+                    <button class="popular-tab" data-type="tv">TV Shows</button>
+                </div>
+            </div>
+            <div class="popular-now">
+                <!-- <img src="movie-1.jpg">
+                <img src="movie-2.jpg">
+                <img src="movie-4.jpg">
+                <img src="movie-6.jpg">
+                <img src="movie-8.jpg">
+                <img src="movie-9.jpg">
+                <img src="movie-10.jpg">
+                <img src="movie-11.jpg">
+                <img src="reality8.jpg">
+                <img src="sci-fi.jpg"> -->
+            </div>
+
+            <div class="movie-night">
+                <h2 class="home-section-title">Movie Night</h2>
+                <div class="main-movie-night">
+                    <h4>🍿 Got a place? Start a Movie Night.</h4>
+                    <p>Bring people together, choose a movie, and create a night around it.</p>
+                    <a href="movie-night.html" class="learn-more">Learn More →</a>
+                </div>
+            </div>
+        </section>
     </main>
+    <div class="modal hidden">
+        <div class="overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Official Trailer</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <iframe class="trailer-frame" src="" allowFullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
 
     <script src="cinema.js"></script>
 

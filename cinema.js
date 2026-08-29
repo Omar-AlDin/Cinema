@@ -727,7 +727,7 @@ const renderDetailsTv = function (tv) {
 
 let currentShowId = null;
 const seasonEpi = document.querySelector('.season-episodes');
-const seasonBtn = document.querySelector('.season-btn');
+// const seasonBtn = document.querySelectorAll('.season-btn');
 
 
 const renderSeasonBtn = function (tv) {
@@ -779,7 +779,6 @@ const loadSeason = async function (tvId = 113962, season = 1) {
         console.error(`Something went wrong: ${err.message}`)
     }
 }
-loadSeason()
 
 
 const renderEpisode = function (seasonData) {
@@ -1309,3 +1308,271 @@ window.addEventListener('pagehide', function () {
 })
 detailsImage();
 
+let slides = [];
+let heroItems = [];
+let current = 0;
+const interval = 5000;
+const heroCarousel = document.querySelector('.hero-carousel');
+const heroTitle = document.querySelector('#hero-title');
+const heroOverview = document.querySelector('#hero-overview');
+const heroMetaData = document.querySelector('#hero-meta');
+
+
+
+
+const truncateText = function (text, maxLength = 110) {
+    if (!text) return;
+    return text.length > maxLength ? text.slice(0, maxLength).trim() + '...' : text;
+};
+
+
+const renderHero = async function (item) {
+    if (!heroTitle) return
+    const { media_type, data } = item;
+    const isTv = media_type === 'tv';
+    console.log("data", data);
+    const logoObj = data.images?.logos?.find(logo => logo.iso_639_1 === "en") || data.images?.logos?.[0];
+    const logoPath = logoObj ? logoObj.file_path : null;
+
+    const rawTitle = isTv ? data.name : data.title;
+    if (logoPath) {
+        heroTitle.innerHTML = `<img src="${imageUrl(logoPath)}" alt="${rawTitle}"class="hero-title-logo"/>`
+    } else {
+        heroTitle.textContent = rawTitle;
+    }
+
+    heroOverview.textContent = truncateText(data.overview);
+
+    const dateStr = isTv ? data.first_air_date : data.release_date;
+    const year = dateStr ? dateStr.split('-')[0] : 'N/A';
+    const genreNames = data.genres?.slice(0, 2).map(g => g.name);
+
+    let certificate;
+    if (isTv) {
+        const ratings = data.content_ratings?.results || [];
+        const cert = ratings.find(c => c.iso_3166_1 === (data.origin_country?.[0] || 'US')) || ratings[0];
+        certificate = cert?.rating;
+    } else {
+        const relDates = data.release_dates?.results?.find(
+            r => r.iso_3166_1 === (data.origin_country?.[0] || 'US')
+        );
+        certificate = relDates?.release_dates?.find(c => c.certification !== '')?.certification;
+    }
+
+    const parts = [
+        ...genreNames,
+        year,
+        certificate ? `<span class="cert-badge">${certificate}</span>` : null,
+        `⭐ ${data.vote_average.toFixed(1)}`
+    ].filter(Boolean);
+
+    heroMetaData.innerHTML = parts
+        .map(p => `<span>${p}</span>`)
+        .join('<span class="dot">•</span>');
+
+    if (heroDetails) {
+        const detailsPage = isTv ? 'tv-details.html' : 'movie-details.html';
+        heroDetails.href = `${detailsPage}?id=${data.id}`
+    }
+};
+
+const heroInfo = document.querySelector('.home-hero-info');
+
+const showNextSlide = function () {
+    if (slides.length < 2) return;
+    heroInfo.classList.add('fade-out');
+    setTimeout(() => {
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('active');
+        renderHero(heroItems[current]);
+        heroInfo.classList.remove('fade-out');
+
+    }, 100);
+
+
+};
+
+
+const fetchHomepageBackdrops = async function () {
+
+    if (!heroCarousel) return;
+
+    const backdropUrl = `https://api.themoviedb.org/3/trending/all/week`;
+
+    const backdropRes = await fetch(backdropUrl, options);
+    const backdropData = await backdropRes.json();
+    const backdropDataSliced = backdropData.results
+        .filter(back => back.media_type === 'movie' || back.media_type === 'tv') //so we don't get celebrities
+        .filter(back => back.backdrop_path)
+        .filter(back => back.vote_count >= 50)
+        .slice(0, 5)
+    // console.log("Slice", backdropDataSliced)
+    const detailsPromise = backdropDataSliced.map(m => {
+        const url = m.media_type === 'tv'
+            ? `https://api.themoviedb.org/3/tv/${m.id}?append_to_response=content_ratings,images,videos&include_image_language=en,null`
+            : `https://api.themoviedb.org/3/movie/${m.id}?append_to_response=release_dates,images,videos&include_image_language=en,null`
+
+        return fetch(url, options)
+            .then(res => res.json())
+            .then(data => ({ media_type: m.media_type, data }));
+    }
+
+    );
+
+    heroItems = await Promise.all(detailsPromise);
+    console.log("heroItems", heroItems);
+
+    heroCarousel.innerHTML = '';
+
+    heroItems.forEach((back, index) => {
+        const slide = document.createElement('div');
+        slide.classList.add('hero-slide');
+        if (index === 0) slide.classList.add('active');
+        slide.style.backgroundImage = `url(${imageUrl(back.data.backdrop_path)})`
+        heroCarousel.append(slide);
+
+    });
+
+    slides = document.querySelectorAll('.hero-slide');
+    renderHero(heroItems[0]);
+
+    startAutoplay();
+};
+
+fetchHomepageBackdrops();
+
+const heroTrailerBtn = document.querySelector('#hero-trailer-btn');
+const heroDetails = document.querySelector('#hero-details-link');
+
+if (heroTrailerBtn) {
+    heroTrailerBtn.addEventListener('click', () => {
+        if (!heroItems || heroItems.length === 0) {
+            console.log("Hero data is still loading...");
+            return;
+        }
+        const currentItem = heroItems[current];
+        if (!currentItem) return;
+
+        const videoList = currentItem.data.videos?.results || [];
+
+        const mainTrailer = videoList?.find(trail => trail.site === "YouTube" && trail.name.toLowerCase().includes("official trailer") && trail.official === true)
+            || videoList.find(trail => trail.site === "YouTube" && trail.official === true && trail.type === "Trailer")
+            || videoList.find(trail => trail.site === "YouTube" && trail.type === "Trailer")
+            || videoList.find(trail => trail.site === "YouTube" && trail.type === "Teaser");
+
+        console.log(mainTrailer)
+        if (mainTrailer) {
+            openTrailer(mainTrailer);
+        } else {
+            alert("No trailer found");
+        }
+    });
+
+
+};
+
+let autoplayTimer = null;
+
+const startAutoplay = function () {
+    if (autoplayTimer) clearInterval(autoplayTimer);
+    if (slides.length > 1) {
+        autoplayTimer = setInterval(showNextSlides, interval);
+    }
+};
+
+const goToSlide = function (direction) {
+    if (slides.length < 2) return;
+
+    heroInfo.classList.add('fade-out');
+    setTimeout(() => {
+        const outgoingSlide = slides[current];
+        outgoingSlide.style.transform = getComputedStyle(outgoingSlide).transform;
+        outgoingSlide.classList.remove('active')
+
+        current = direction === 'next'
+            ? (current + 1) % slides.length
+            : (current - 1 + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        renderHero(heroItems[current]);
+        void heroInfo.offsetWidth;
+        heroInfo.classList.remove('fade-out');
+    }, 100);
+
+    startAutoplay(); // reset the countdown after any manual navigation
+};
+
+const showNextSlides = function () { goToSlide('next'); };
+const showPrevSlide = function () { goToSlide('prev'); };
+
+// Arrow buttons
+document.querySelector('#hero-next')?.addEventListener('click', showNextSlides);
+document.querySelector('#hero-prev')?.addEventListener('click', showPrevSlide);
+
+// Touch swipe
+let touchStartX = 0;
+let touchEndX = 0;
+const swipeThreshold = 50; // minimum px drag to count as a swipe
+
+heroCarousel.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+}, { passive: true });
+
+heroCarousel.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - touchStartX;
+
+    if (Math.abs(deltaX) < swipeThreshold) return; // too small, ignore as a tap
+
+    if (deltaX < 0) {
+        showNextSlides(); // swiped left → go forward
+    } else {
+        showPrevSlide(); // swiped right → go back
+    }
+});
+
+//append movies / tv shows to popular now
+// movie btn trigger movie fetch
+// tv show button trigger tv show fetch
+// two popular api links renderPopularHome
+const PopularNowHome = [];
+const mainHomePage = document.querySelector('.main-homepage')
+const popularTab = document.querySelectorAll('.popular-tab');
+const popularNow = document.querySelector('.popular-now');
+
+const renderPopularHome = async function (mediaType = 'movie') {
+    if (!mainHomePage) return;
+
+    const url = `https://api.themoviedb.org/3/discover/${mediaType}?sort_by=popularity_desc`;
+    const urlRes = await fetch(url, options);
+    const urlData = await urlRes.json();
+
+    const dataSliced = urlData.results.slice(0, 14);
+
+    popularNow.innerHTML = '';
+
+    dataSliced.forEach(el => {
+        const detailsPage = mediaType === 'movie' ? 'movie-details.html' : 'tv-details.html';
+        const image = document.createElement('img');
+        image.classList.add('popular-poster');
+        image.alt = mediaType === 'movie' ? el.title : el.name;
+        image.src = imageUrl(el.poster_path, 'w500')
+        const link = document.createElement('a');
+        link.href = `${detailsPage}?id=${el.id}`
+        link.classList.add('poster-link');
+        link.append(image);
+        popularNow.append(link);
+
+    });
+}
+
+popularTab.forEach(tab => {
+    tab.addEventListener('click', function () {
+        popularTab.forEach(click => click.classList.remove('active'));
+        tab.classList.add('active');
+        renderPopularHome(tab.dataset.type);
+        console.log('hello')
+    });
+});
+
+renderPopularHome('movie');
