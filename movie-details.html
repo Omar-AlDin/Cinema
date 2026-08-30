@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="tab-title"></title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <link rel="stylesheet" href="style.css">
 
 </head>
@@ -59,14 +61,17 @@
                 <button class="btn-trailer hidden">▶ Watch Trailer</button>
 
                 <div class="status">
-                    <p class="date">Release Date: <span class="date-span"></span></p>
-
+                    <div class="date-group">
+                        <p class="date-label"></p>
+                        <span class="date-span"></span>
+                        </p>
+                    </div>
                     <p class="language">Original Language: <span class="language-span"></span></p>
+                    <div class="budget-revenue">
+                        <p class="budget">Budget: <span class="budget-span"></span></p>
 
-                    <p class="budget">Budget: <span class="budget-span"></span></p>
-
-                    <p class="revenue">Revenue: <span class="revenue-span"></span></p>
-
+                        <p class="revenue">Revenue: <span class="revenue-span"></span></p>
+                    </div>
 
                 </div>
             </aside>
@@ -76,6 +81,12 @@
                     <div class="title-info">
                         <span class="rating">⭐ <strong id="movie-rating"></strong><span
                                 class="max-score">/10</span></span>
+
+                        <span class="upcoming hidden">
+                            <i data-lucide="calendar" class="icon-badge"></i>
+                            <span>UPCOMING</span>
+                        </span>
+
                         <span class="dot">•</span>
                         <span id="release-year"></span>
                         <span class="dot">•</span>
@@ -100,42 +111,35 @@
 
                     <div class="cast-member">
 
-                        <!-- <img src="cast-1.jpg" alt="Michelle Yeoh">
-                        <p class="actor-name">Michelle Yeoh</p>
-                        <p class="character-name">Evelyn Wang</p>
-                    </div>
+                        <!--                 
                     <div class="cast-member">
                         <img class="cast-image" src="cast-2.jpg" alt="Ke Huy Quan">
                         <p class="actor-name">Ke Huy Quan</p>
                         <p class="character-name">Waymond Wang</p>
-                    </div>
-                    <div class="cast-member">
-                        <img src="cast-3.jpg" alt="Jenny Slate">
-                        <p class="actor-name">Jenny Slate</p>
-                        <p class="character-name">Debbie the Dog Mom</p> -->
+                    </div> -->
+
+
+                        <button class="btn-view-more">View More</button>
+
                     </div>
 
-                    <button class="btn-view-more">View More</button>
+                    <section class="media-section">
+                        <div class="media-nav">
 
+                            <nav>
+                                <h2>Media</h2>
+                                <button class="btn-popular" data-tab="popular">Most Popular</button>
+                                <button class="btn-videos" data-tab="videos">Videos</button>
+                                <button class="btn-backdrops" data-tab="backdrops">Backdrops</button>
+                                <button class="btn-posters" data-tab="posters">Posters</button>
+                            </nav>
+
+                        </div>
+                        <div class="media-scroll">
+
+                        </div>
+                    </section>
                 </div>
-
-                <section class="media-section">
-                    <div class="media-nav">
-
-                        <nav>
-                            <h2>Media</h2>
-                            <button class="btn-popular" data-tab="popular">Most Popular</button>
-                            <button class="btn-videos" data-tab="videos">Videos</button>
-                            <button class="btn-backdrops" data-tab="backdrops">Backdrops</button>
-                            <button class="btn-posters" data-tab="posters">Posters</button>
-                        </nav>
-
-                    </div>
-                    <div class="media-scroll">
-
-                    </div>
-                </section>
-            </div>
 
         </section>
         <!-- repeat for however many cast dummy entries you want -->
@@ -146,7 +150,7 @@
         <div class="overlay">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Official Trailer</h3>
+                    <h3 class="trailer-name">Official Trailer</h3>
                     <button class="close-modal">&times;</button>
                 </div>
                 <iframe class="trailer-frame" src="" allowFullscreen></iframe>
@@ -154,6 +158,9 @@
         </div>
     </div>
     <script src="cinema.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>

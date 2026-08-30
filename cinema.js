@@ -11,6 +11,7 @@ const options = {
     }
 };
 
+//React refactor: Add dynamic Trending badge based on popularity/trending criteria. Also add for new criteria
 
 //Variables
 const mediaState = {
@@ -584,7 +585,7 @@ const ratingTv = document.querySelector('#rating-tv');
 const isTv = window.location.pathname.includes('tv-details.html');
 const dota = document.querySelector('.dot-time');
 const seasonScroller = document.querySelector('.season-scroller');
-
+const today = new Date();
 
 console.log(isTv)
 const renderDetailsTv = function (tv) {
@@ -593,6 +594,14 @@ const renderDetailsTv = function (tv) {
     posterImage.src = imageUrl(tv.poster_path);
     posterImage.classList.remove('hidden')
 
+    const tvDate = tv.first_air_date;
+    const releaseDate = new Date(tvDate);
+
+    if (!tvDate) {
+        document.querySelector('#tab-title').textContent = `${tv.name}`;
+    } else {
+        document.querySelector('#tab-title').textContent = `${tv.name} (${tv.first_air_date.split('-')[0]})`;
+    }
     const creator = tv.created_by.map(create => create.name).join(', ');
     creatorTv.textContent = creator || "N/A";
     ratingTv.textContent = tv.vote_average.toFixed(1);
@@ -609,12 +618,14 @@ const renderDetailsTv = function (tv) {
         })
     }
 
+
     //release year
     function releaseYearRage(tv) {
         if (!tv.first_air_date) {
             releaseYear.textContent = "N/A";
             return;
         }
+
 
         const startYear = tv.first_air_date.split('-')[0];
         const isEnded = tv.status === "Ended" || tv.status === "Canceled";
@@ -659,9 +670,21 @@ const renderDetailsTv = function (tv) {
 
     if (trailerButton) trailerButton.classList.remove('hidden');
 
-    if (status) {
-        document.querySelector('.date-span').textContent = formatedDate(tv.first_air_date, tv.origin_country[0])
+
+
+    if (releaseDate <= today) {
+        dateLabel.textContent = "Release Date"
+        document.querySelector('.date-span').textContent = formatedDate(tv.first_air_date, tv.origin_country[0]) || "N/A"
         status.classList.remove('hidden')
+
+    } else {
+        dateLabel.textContent = "Coming Soon"
+        dateSpan.textContent = formatedDate(tv.first_air_date, tv.origin_country[0]) || "N/A";
+        ratingSpan.classList.add('hidden');
+        status.classList.remove('hidden');
+        document.querySelector('.episode').classList.add('hidden')
+        document.querySelector('.upcoming').classList.remove('hidden');
+
     }
 
 
@@ -815,7 +838,7 @@ const MONTHS = {
 };
 
 const formatedDate = function (date, origin) {
-    if (!date)
+    if (!date && !origin)
         return "N/A"
 
     const [year, month, day] = date.split('-');
@@ -827,7 +850,9 @@ const formatedDate = function (date, origin) {
     try {
         return `${monthNum} ${day}, ${year} (${country.of(origin)})`
     } catch (e) {
-        country.toUpperCase();
+        if (origin) {
+            country.toUpperCase();
+        }
     }
 
 }
@@ -889,12 +914,34 @@ const formatedLanguage = function (lan) {
 
 if (status) status.classList.add('hidden')
 
+const dateLabel = document.querySelector('.date-label');
+const dateSpan = document.querySelector('.date-span');
+const DateItem = document.querySelector('.date');
+const budgetAndRevenue = document.querySelector('.budget-revenue')
+const ratingSpan = document.querySelector('.rating');
+
 
 const spans = function (movie) {
     posterImage.src = imageUrl(movie.poster_path);
     posterImage.alt = `${movie.original_title} Poster`;
 
-    document.querySelector('.date-span').textContent = formatedDate(movie.release_date, movie.origin_country[0]);
+    const movieDate = movie.release_date;
+    const releaseDate = new Date(movieDate);
+    const today = new Date();
+    console.log(releaseDate, today)
+    if (releaseDate <= today) {
+        dateLabel.textContent = "Release Date"
+        document.querySelector('.date-span').textContent = formatedDate(movie.release_date, movie.origin_country[0]);
+
+    } else {
+        dateLabel.textContent = "Coming Soon"
+        dateSpan.textContent = formatedDate(movie.release_date, movie.origin_country[0]);
+        budgetAndRevenue.classList.add('hidden')
+        ratingSpan.classList.add('hidden')
+        document.querySelector('.upcoming').classList.remove('hidden');
+
+    }
+
     document.querySelector('.language-span').textContent = formatedLanguage(movie.original_language);
     document.querySelector('.budget-span').textContent = formatedCurrency(movie.budget) || "N/A";
     document.querySelector('.revenue-span').textContent = formatedCurrency(movie.revenue) || "N/A";
@@ -1166,6 +1213,7 @@ const detailsImage = async function () {
         setActive(mostPopular);
 
         renderSeasonBtn(tvData);
+        trailerName(tvData);
 
     } else if (moviePageContainer) {
         // console.log("move grid")
@@ -1189,6 +1237,8 @@ const detailsImage = async function () {
         await mediaAsset(movieId);
         renderPopular();
         setActive(mostPopular);
+        trailerName(movieData);
+
 
     }
 }
@@ -1258,24 +1308,42 @@ const openTrailer = function (vidkey) {
     modalContent.querySelector('.trailer-frame')?.remove();
     modalContent.append(iframe);
     modal.classList.remove('hidden')
+
+}
+
+const trailerName = function (Itemname) {
+    if (trailerButton) {
+
+        trailerButton.addEventListener('click', function () {
+
+
+            const mainTrailer = mediaState.videos.find(trail => trail.site === "YouTube" && trail.name === "Official Trailer" && trail.official === true) || mediaState.videos.find(trail => trail.site === "YouTube" && trail.official === true && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Teaser");
+            console.log(mainTrailer)
+
+            if (mainTrailer) {
+                openTrailer(mainTrailer)
+                trailerName();
+
+            } else {
+                alert("No trailer found")
+            }
+
+
+
+
+            if (isTv) {
+                document.querySelector('.trailer-name').textContent = `${Itemname.name} - ${mainTrailer.type || 'Trailer'}`
+
+
+            } else {
+                document.querySelector('.trailer-name').textContent = `${Itemname.title} - ${mainTrailer.type || 'Trailer'}`
+            }
+        });
+    }
+
 }
 
 
-if (trailerButton) {
-
-    trailerButton.addEventListener('click', function () {
-
-        const mainTrailer = mediaState.videos.find(trail => trail.site === "YouTube" && trail.name === "Official Trailer" && trail.official === true) || mediaState.videos.find(trail => trail.site === "YouTube" && trail.official === true && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Teaser");
-
-        if (mainTrailer) {
-            openTrailer(mainTrailer)
-
-        } else {
-            alert("No trailer found")
-        }
-
-    });
-}
 
 const closeModal = function () {
     modal.classList.add('hidden');
@@ -1464,6 +1532,7 @@ if (heroTrailerBtn) {
         console.log(mainTrailer)
         if (mainTrailer) {
             openTrailer(mainTrailer);
+            trailerName();
         } else {
             alert("No trailer found");
         }
@@ -1531,10 +1600,7 @@ heroCarousel.addEventListener('touchend', (e) => {
     }
 });
 
-//append movies / tv shows to popular now
-// movie btn trigger movie fetch
-// tv show button trigger tv show fetch
-// two popular api links renderPopularHome
+
 const PopularNowHome = [];
 const mainHomePage = document.querySelector('.main-homepage')
 const popularTab = document.querySelectorAll('.popular-tab');

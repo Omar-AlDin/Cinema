@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="tab-title"></title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <link rel="stylesheet" href="style.css">
 
 </head>
@@ -47,7 +49,11 @@
                 <button class="btn-trailer hidden">▶ Watch Trailer</button>
 
                 <div class="status">
-                    <p class="date">Release Date: <span class="date-span"></span></p>
+                    <div class="date-group">
+                        <p class="date-label"></p>
+                        <span class="date-span"></span>
+                        </p>
+                    </div>
 
                     <p class="language">Original Language: <span class="language-span"></span></p>
 
@@ -65,6 +71,10 @@
                     <h2 id="title"></h2>
                     <div class="title-info">
                         <span class="rating">⭐ <strong id="rating-tv"></strong><span class="max-score">/10</span></span>
+                        <span class="upcoming hidden">
+                            <i data-lucide="calendar" class="icon-badge"></i>
+                            <span>UPCOMING</span>
+                        </span>
                         <span class="dot">•</span>
                         <span id="release-year"></span>
                         <span class="dot">•</span>
@@ -133,7 +143,7 @@
         <div class="overlay">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Official Trailer</h3>
+                    <h3 class="trailer-name">Official Trailer</h3>
                     <button class="close-modal">&times;</button>
                 </div>
                 <iframe class="trailer-frame" src="" allowFullscreen></iframe>
@@ -141,6 +151,9 @@
         </div>
     </div>
     <script src="cinema.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>
