@@ -121,14 +121,7 @@ nav a:hover {
 
 
 .poster {
-
-    /* position: absolute;
-    bottom: -40px;
-    left: 20px;
-    width: 230px;
-    border-radius: 10px;
-    object-fit: cover; */
-    width: 230px;
+    width: 100%;
     border-radius: 10px;
     object-fit: cover;
     position: relative;
@@ -214,8 +207,8 @@ nav a:hover {
 
 
 .left-column {
+    width: 230px;
     padding-top: 0px;
-    /* text-wrap: wrap; */
     gap: 20px;
     display: flex;
     flex-direction: column;
@@ -228,10 +221,13 @@ nav a:hover {
 }
 
 .genres {
-
     gap: 8px;
     display: flex;
     flex-wrap: wrap;
+    /* max-width: 100%; */
+    width: 100%;
+
+    justify-content: flex-start;
 }
 
 .genre-pill {
@@ -242,14 +238,17 @@ nav a:hover {
     cursor: pointer;
 
 
+
 }
 
-.status {
+.status,
+.budget-revenue {
+    width: 100%;
+    /* width: 270px; */
     flex-wrap: wrap;
-    width: 270px;
     display: flex;
     flex-direction: column;
-    gap: 17px;
+    gap: 15px;
 
 }
 
@@ -270,6 +269,7 @@ nav a:hover {
 
 }
 
+
 .date-group span {
     color: #ffffff;
     font-weight: 490;
@@ -283,7 +283,8 @@ nav a:hover {
     cursor: pointer;
     border-radius: 30px;
     padding: 10px 10px;
-    margin-right: 80px;
+    width: 95%
+        /* margin-right: 80px; */
 }
 
 .details-bottom {
@@ -553,10 +554,11 @@ nav a:hover {
 
 
 .main-nav {
-    max-width: 1400px;
+    /* max-width: 1400px; */
+    max-width: var(--content-max);
     margin: 0 auto;
-    padding: 15px 20px;
-    /* background: transparent; */
+    /* padding: 15px 20px; */
+    padding: 15px var(--content-pad);
 }
 
 .browse-container {
@@ -845,6 +847,13 @@ nav a:hover {
 
 }
 
+.genre-container-home {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 0 20px;
+}
+
 .genre-card {
     aspect-ratio: 2/1;
     border-radius: 7px;
@@ -1000,6 +1009,7 @@ nav a:hover {
 
 }
 
+
 .card-img img {
     width: 100%;
     height: 100%;
@@ -1041,14 +1051,38 @@ nav a:hover {
 
 }
 
+.genre-header-home,
+.new-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.see-all {
+    text-decoration: none;
+    color: #a0a0a0;
+    margin-bottom: 2rem;
+    font-size: 14px;
+    transition: color 0.2s ease;
+    margin-bottom: 10px;
+    margin-right: 25px;
+}
+
+.see-all:hover {
+    color: #ffffff;
+}
+
 .genre-section {
     margin-bottom: 2rem;
 }
 
-.genre-container a {
+.genre-container a,
+.genre-container-home a {
     text-decoration: none;
     color: inherit;
     display: flex;
+    user-select: none;
+
 }
 
 .genre-breadcrumb {
@@ -1113,30 +1147,39 @@ nav a:hover {
 }
 
 .home-section-title {
-    padding: 0 14px;
-    margin: 0 20px;
+    padding: 0;
+    margin: 0 0 15px var(--scroller-gap);
     font-family: 'Noto Sans', sans-serif;
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     font-weight: 700;
-    margin-bottom: 15px;
+    padding-left: 12px;
+
     border-left: 3px solid #00adb5;
 
 }
 
 .main-homepage {
-    max-width: 1600px;
+    /* max-width: 1600px; */
+    max-width: var(--content-max);
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+    padding-left: var(--content-pad);
+    padding-right: var(--content-pad);
     margin-top: 1.5rem;
     /* gap: 100px; */
 
 }
 
-.movie-night {
+.movie-night,
+.highly-rated-header,
+.hidden-gem-header,
+.genre-header-home,
+.new-header {
     margin-top: 50px;
-    /* or whatever gap feels right - try 15-25px */
 }
+
+
 
 .main-movie-night {
     margin: 5px 20px;
@@ -1155,6 +1198,7 @@ nav a:hover {
     color: #b3b2b2;
     margin: 15px 0 16px 0;
 }
+
 
 .learn-more {
     display: inline-flex;
@@ -1175,6 +1219,7 @@ nav a:hover {
     box-shadow: 0 4px 14px rgba(0, 173, 181, 0.2);
 }
 
+
 .popular-now {
     /* justify-content: flex-start; */
     padding: 20px 20px;
@@ -1184,18 +1229,37 @@ nav a:hover {
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+
 
 }
 
-.popular-now-wrapper {
-    position: relative;
+
+
+:root {
+    --scroller-gap: 20px;
+    --content-max: 1400px;
+    --content-pad: 40px;
 }
 
-.popular-now img {
-    flex-shrink: 0;
-
+.highly-rated-main,
+.hidden-gem-main,
+.new-main {
+    /* padding: 0px 20px 20px 20px; */
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    padding: var(--scroller-gap);
+    margin-top: calc(-0.9 * var(--scroller-gap));
 
 }
+
 
 .popular-tab {
     background: #1c2126;
@@ -1208,7 +1272,6 @@ nav a:hover {
     transition: all 0.2s ease;
 
 }
-
 
 
 .toggle-btn {
@@ -1229,7 +1292,11 @@ nav a:hover {
     box-shadow: 0 4px 12px rgba(0, 173, 181, 0.30);
 }
 
-.popular-now img {
+.popular-now img,
+.highly-rated-main img,
+.hidden-gem-main img,
+.new-main img {
+    flex-shrink: 0;
     width: 150px;
     height: 210px;
     border-radius: 9px;
@@ -1238,13 +1305,19 @@ nav a:hover {
     border: 2px solid transparent;
     transition: transform 0.2s;
     outline-offset: -3px;
+    z-index: 10;
+    z-index: 5;
 
 }
 
-.popular-now img:hover {
+.popular-now img:hover,
+.highly-rated-main img:hover,
+.hidden-gem-main img:hover,
+.new-main img:hover {
     transform: scale(1.06);
     outline: 2px solid coral;
     outline-width: medium;
+
 }
 
 .hero-carousel {
@@ -1580,7 +1653,6 @@ nav a:hover {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    align-items: flex-start;
     gap: 16px;
 }
 
@@ -1595,13 +1667,26 @@ nav a:hover {
     justify-content: center;
     margin-top: 0;
     font-size: 20px;
-
 }
 
 .feature-icon i {
     color: #e50914;
     width: 20px;
     height: 20px;
+
+}
+
+.feature-icon-home {
+    position: absolute;
+
+}
+
+.feature-icon-home i {
+    color: #e50914;
+    width: 20px;
+    height: 20px;
+    z-index: 5;
+
 }
 
 .feature-card h4 {
@@ -1672,7 +1757,32 @@ nav a:hover {
 
 }
 
+.genre-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 650;
+    letter-spacing: 0.5px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    z-index: 3;
+}
 
+.genre-badge .lucide {
+
+    width: 10px;
+    height: 15px;
+    stroke-width: 2.5;
+}
 
 .hidden {
     display: none;

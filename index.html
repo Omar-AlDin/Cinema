@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinema Cafe</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <link rel="stylesheet" href="style.css">
 
 </head>
@@ -57,16 +59,7 @@
                 </div>
             </div>
             <div class="popular-now">
-                <!-- <img src="movie-1.jpg">
-                <img src="movie-2.jpg">
-                <img src="movie-4.jpg">
-                <img src="movie-6.jpg">
-                <img src="movie-8.jpg">
-                <img src="movie-9.jpg">
-                <img src="movie-10.jpg">
-                <img src="movie-11.jpg">
-                <img src="reality8.jpg">
-                <img src="sci-fi.jpg"> -->
+                <!-- <img src="movie-1.jpg"> -->
             </div>
 
             <div class="movie-night">
@@ -77,6 +70,78 @@
                     <a href="movie-night.html" class="learn-more">Learn More →</a>
                 </div>
             </div>
+
+            <div class="highly-rated-header">
+                <h2 class="home-section-title">Highly Rated</h2>
+            </div>
+            <div class="highly-rated-main"></div>
+
+            <div class="hidden-gem-header">
+                <h2 class="home-section-title">Hidden Gems</h2>
+            </div>
+            <div class="hidden-gem-main"></div>
+
+
+            <div class="genre-header-home">
+                <h2 class="home-section-title">Genres</h2>
+                <a href="genres.html" class="see-all">See all →</a>
+            </div>
+            <div class="genre-container-home">
+                <a href="sub-genre.html?type=movie&genre=horror" class="genre-card horror"
+                    style="--genre-color: #8b0000">
+                    <div class="card-img">
+                        <img src="movie-4.jpg" alt="Horror" loading="lazy">
+                    </div>
+                    <span class="genre-badge"><i data-lucide="clapperboard"></i>Movie</span>
+
+                    <span class="genre-title">Horror</span>
+                </a>
+
+                <div class="genre-card thriller" style="--genre-color: #331C2D ">
+                    <div class="card-img">
+                        <img src="thriller.jpg" alt="Thriller" loading="lazy">
+                    </div>
+                    <span class="genre-badge"><i data-lucide="clapperboard"></i>Movie</span>
+                    <span class="genre-title">Thriller</span>
+
+                </div>
+
+                <div class="genre-card comedy" style="--genre-color: #0090e0">
+                    <div class="card-img">
+                        <img src="comedy.jpg" alt="Comedy" loading="lazy">
+                    </div>
+                    <span class="genre-badge"><i data-lucide="clapperboard"></i>Movie</span>
+
+                    <span class="genre-title">Comedy</span>
+                </div>
+
+                <div class="genre-card drama-tv" style="--genre-color: #15803D">
+                    <div class="card-img">
+                        <img src="drama-tv3.jpg" alt="Drama" loading="lazy">
+                    </div>
+                    <span class="genre-badge"><i data-lucide="tv"></i>TV</span>
+
+                    <span class="genre-title">Drama</span>
+                </div>
+
+                <div class="genre-card action-tv" style="--genre-color: #1D4ED8">
+                    <div class="card-img">
+                        <img src="action-tv2.jpg" alt="Action & Adventure" loading="lazy">
+                    </div>
+                    <span class="genre-badge"><i data-lucide="tv"></i>TV</span>
+
+                    <span class="genre-title">Action &<br>Adventure</span>
+                </div>
+            </div>
+
+            <div class="new-header">
+                <h2 class="home-section-title">New Releases</h2>
+                <a href="browse.html?sort=primary_release_date.desc" class="see-all new-releases">See all →</a>
+
+            </div>
+            <div class="new-main"></div>
+
+
         </section>
     </main>
     <div class="modal hidden">
@@ -93,6 +158,9 @@
 
 
     <script src="cinema.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 
 </body>
 

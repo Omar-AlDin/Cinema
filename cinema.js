@@ -114,6 +114,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const movieId = urlParams.get('id') || '4232'
 const keywordParam = urlParams.get('keyword');
 const labelParam = urlParams.get('label');
+const sortParam = urlParams.get('sort');
 
 if (keywordParam) {
     currentFilters.keyword = keywordParam;
@@ -136,6 +137,15 @@ const handleFilter = function () {
     fetchMovies(currentPage).then(checkSentinel)
 }
 
+if (sortParam) {
+    currentFilters.sortBy = sortParam;
+}
+
+const sortSelect = document.querySelector('#select-sort');
+
+if (sortSelect && sortParam) {
+    sortSelect.value = sortParam;
+}
 // const minVotes = currentFilters
 //Movies
 const fetchMovies = async function (page = 1) {
@@ -359,7 +369,7 @@ const tvImage = async function (page = 1) {
             tvUrl += `&with_genres=${currentFiltersTv.genre}`;
         }
         if (currentFiltersTv.year) {
-            tvUrl += `&primary_release_year=${currentFiltersTv.year}`;
+            tvUrl += `&first_air_date_year=${currentFiltersTv.year}`;
         }
         if (currentFiltersTv.minRating) {
             tvUrl += `&vote_average.gte=${effectiveRating}`;
@@ -367,7 +377,6 @@ const tvImage = async function (page = 1) {
         if (currentFiltersTv.language) {
             tvUrl += `&with_original_language=${currentFiltersTv.language}`;
         }
-
 
 
         const tvRes = await fetch(tvUrl, { ...options, signal });
@@ -674,12 +683,14 @@ const renderDetailsTv = function (tv) {
 
     if (releaseDate <= today) {
         dateLabel.textContent = "Release Date"
-        document.querySelector('.date-span').textContent = formatedDate(tv.first_air_date, tv.origin_country[0]) || "N/A"
+        dateSpan.textContent = formatedDateOnly(tv.first_air_date) || "N/A";
+        document.querySelector('.origin-country').textContent = formatedCountry(tv.origin_country[0]) || "N/A";
         status.classList.remove('hidden')
 
     } else {
         dateLabel.textContent = "Coming Soon"
-        dateSpan.textContent = formatedDate(tv.first_air_date, tv.origin_country[0]) || "N/A";
+        dateSpan.textContent = formatedDateOnly(tv.first_air_date) || "N/A";
+        document.querySelector('.origin-country').textContent = formatedCountry(tv.origin_country[0]) || "N/A";
         ratingSpan.classList.add('hidden');
         status.classList.remove('hidden');
         document.querySelector('.episode').classList.add('hidden')
@@ -857,6 +868,30 @@ const formatedDate = function (date, origin) {
 
 }
 
+const formatedCountry = function (origin) {
+    if (!origin) return "N/A";
+
+    const country = new Intl.DisplayNames(['en'], { type: 'region' })
+    return `${country.of(origin)}`
+
+}
+
+
+const formatedDateOnly = function (date) {
+    if (!date)
+        return "N/A"
+
+    const [year, month, day] = date.split('-');
+
+    const monthNum = MONTHS[month] || month;
+
+    const country = new Intl.DisplayNames(['en'], { type: 'region' })
+
+
+    return `${monthNum} ${day}, ${year}`
+
+}
+
 //Next Episode
 const nextEpisode = function (date) {
     if (!date) {
@@ -931,11 +966,14 @@ const spans = function (movie) {
     console.log(releaseDate, today)
     if (releaseDate <= today) {
         dateLabel.textContent = "Release Date"
-        document.querySelector('.date-span').textContent = formatedDate(movie.release_date, movie.origin_country[0]);
+        dateSpan.textContent = formatedDateOnly(movie.release_date);
+        document.querySelector('.origin-country').textContent = formatedCountry(movie.origin_country[0]);
 
     } else {
+
         dateLabel.textContent = "Coming Soon"
-        dateSpan.textContent = formatedDate(movie.release_date, movie.origin_country[0]);
+        dateSpan.textContent = formatedDateOnly(movie.release_date) || "N/A";
+        document.querySelector('.origin-country').textContent = formatedCountry(movie.origin_country[0]) || "N/A";
         budgetAndRevenue.classList.add('hidden')
         ratingSpan.classList.add('hidden')
         document.querySelector('.upcoming').classList.remove('hidden');
@@ -1642,3 +1680,145 @@ popularTab.forEach(tab => {
 });
 
 renderPopularHome('movie');
+
+//Highly Rated 
+const highlyRated = document.querySelector('.highly-rated-main');
+
+const renderHighlyRated = async function () {
+    const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=5000&include_adult=false`
+    const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=vote_average.desc&vote_count.gte=1500&include_adult=false`;
+
+    const [movieRes, tvRes] = await Promise.all([
+        fetch(movieUrl, options),
+        fetch(tvUrl, options)
+    ]);
+
+    const movieData = await movieRes.json();
+    const tvData = await tvRes.json();
+
+    console.log("Hi", movieData, tvData);
+
+    const movieSliced = movieData.results.slice(0, 7);
+    const tvSliced = tvData.results.slice(0, 7);
+
+    const tvAndMovie = [...movieSliced, ...tvSliced];
+    tvAndMovie.sort((a, b) => b.vote_average - a.vote_average);
+    console.log("TV and movie", tvAndMovie);
+
+    const mediaType =
+        tvAndMovie.forEach(item => {
+            const image = document.createElement('img');
+            image.alt = item.first_air_date ? item.name : item.title;
+            image.classList.add('highly-rated-poster');
+            image.src = imageUrl(item.poster_path, 'w500')
+            const link = document.createElement('a');
+            link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
+            link.classList.add('highly-rated-link');
+            link.append(image);
+            highlyRated.append(link);
+
+
+        })
+
+
+}
+
+const hiddenGems = [
+    { id: 968, type: 'movie' },
+    { id: 306947, type: 'movie' },
+    { id: 5876, type: 'movie' },
+    { id: 769364, type: 'movie' },
+    { id: 393184, type: 'movie' },
+    { id: 742, type: 'movie' },
+    { id: 34435, type: 'tv' },
+    { id: 117978, type: 'movie' },
+    { id: 204223, type: 'tv' },
+    { id: 159037, type: 'movie' },
+    { id: 21484, type: 'movie' },
+    { id: 10294, type: 'movie' },
+    { id: 44156, type: 'tv' }
+]
+renderHighlyRated();
+
+//Hidden Gems
+const renderGems = async function () {
+    const hiddenGemData = document.querySelector('.hidden-gem-main');
+    const request = hiddenGems.map(item =>
+        fetch(`https://api.themoviedb.org/3/${item.type}/${item.id}`, options).then(res => res.json())
+    );
+
+    const gems = await Promise.all(request);
+
+    console.log("gems", gems);
+
+    gems.forEach(item => {
+        const detailsPage = item.first_air_date ? 'tv-details.html' : 'movie-details.html'
+        const image = document.createElement('img');
+        image.alt = item.first_air_date ? item.name : item.title;
+        image.classList.add('hidden-gem-poster');
+        image.src = imageUrl(item.poster_path, 'w500')
+        const link = document.createElement('a');
+        link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
+        link.classList.add('hidden-gem-link');
+        link.append(image);
+        hiddenGemData.append(link);
+    });
+
+
+}
+renderGems();
+
+const getDaysAgo = function (daysAgo) {
+    const d = new Date();
+    d.setDate(d.getDate() - daysAgo);
+    return d.toISOString().split('T')[0];
+}
+
+const renderNew = async function () {
+
+    const today = getDaysAgo(0);
+    const sixWeeksAgo = getDaysAgo(45);
+
+    const newMain = document.querySelector('.new-main');
+
+    const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=primary_release_date.desc&primary_release_date.gte=${sixWeeksAgo}&primary_release_date.lte=${today}&vote_count.gte=20&include_adult=false`;
+
+    const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=first_air_date.desc&first_air_date.gte=${sixWeeksAgo}&first_air_date.lte=${today}&vote_count.gte=7&include_adult=false`;
+
+    const [movieRes, tvRes] = await Promise.all([
+        fetch(movieUrl, options),
+        fetch(tvUrl, options)
+    ]);
+
+    const movieData = await movieRes.json();
+    const tvData = await tvRes.json();
+
+    const newMovieSliced = movieData.results.slice(0, 7);
+    const newTvSliced = tvData.results.slice(0, 7);
+
+    const newMovieAndTv = [...newMovieSliced, ...newTvSliced]
+    newMovieAndTv.sort((a, b) => b.vote_average - a.vote_average)
+    console.log("MV", newMovieAndTv);
+
+    newMovieAndTv.forEach(item => {
+        const image = document.createElement('img');
+        image.alt = item.first_air_date ? item.name : item.title;
+        image.classList.add('new-poster');
+        image.src = imageUrl(item.poster_path, 'w500')
+        const link = document.createElement('a');
+        link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
+        link.classList.add('new-link');
+        link.append(image);
+        newMain.append(link);
+    });
+}
+
+renderNew();
+
+const seeMoreNew = document.querySelector('.new-releases');
+
+seeMoreNew.addEventListener('click', function () {
+    currentFilters.sortBy = 'primary_release_date.desc';
+    fetchMovies();
+    console.log("Hello")
+})
