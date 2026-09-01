@@ -1174,6 +1174,7 @@ nav a:hover {
 }
 
 .home-section-title.movie-night {
+    margin: 0 0 15px var(--scroller-gap);
     border-left: 3px solid #f59e0b;
 
 }
@@ -1197,10 +1198,24 @@ nav a:hover {
 .genre-header-home,
 .new-header,
 .upcoming-header {
-    margin-top: 50px;
+    margin-top: 20px;
     scroll-margin-top: 50px;
 }
 
+/* .main-movie-night,
+.highly-rated-main,
+.hidden-gem-main,
+.genre-container-home,
+.new-main,
+.upcoming-main {
+    margin-bottom: 35px;
+    scroll-margin-top: 50px;
+} */
+
+.genre-container-home {
+    margin-bottom: 30px;
+
+}
 
 .main-movie-night {
     margin: 5px 20px;
@@ -2123,7 +2138,9 @@ nav a:hover {
         font-size: 0.55rem;
     }
 
-
+    .upcoming-main {
+        margin-bottom: 0;
+    }
 
 }
 

@@ -1464,7 +1464,7 @@ const heroMetaData = document.querySelector('#hero-meta');
 
 
 
-const truncateText = function (text, maxLength = 105) {
+const truncateText = function (text, maxLength = 104) {
     if (!text) return;
     const subString = text.slice(0, maxLength)
     return text.length > maxLength ? text.slice(0, subString.lastIndexOf(' ')).trim() + '...' : text;
@@ -1725,12 +1725,19 @@ const renderPopularHome = async function (mediaType = 'movie') {
     });
 }
 
+const seeAllLinks = document.querySelector('.link .see-all');
+
 popularTab.forEach(tab => {
     tab.addEventListener('click', function () {
         popularTab.forEach(click => click.classList.remove('active'));
         tab.classList.add('active');
         renderPopularHome(tab.dataset.type);
-        console.log('hello')
+        if (seeAllLinks) {
+            seeAllLinks.href = tab.dataset.type === 'tv'
+                ? 'tvshow.html?sort=popularity.desc'
+                : 'browse.html?sort=popularity.desc';
+        }
+
     });
 });
 
