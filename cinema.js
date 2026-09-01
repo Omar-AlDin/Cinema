@@ -115,6 +115,8 @@ const movieId = urlParams.get('id') || '4232'
 const keywordParam = urlParams.get('keyword');
 const labelParam = urlParams.get('label');
 const sortParam = urlParams.get('sort');
+const voteCount = urlParams.get('vote_count.gte');
+const sortSelect = document.querySelector('#select-sort');
 
 if (keywordParam) {
     currentFilters.keyword = keywordParam;
@@ -141,11 +143,29 @@ if (sortParam) {
     currentFilters.sortBy = sortParam;
 }
 
-const sortSelect = document.querySelector('#select-sort');
+
 
 if (sortSelect && sortParam) {
     sortSelect.value = sortParam;
 }
+
+
+const hiddenGems = [
+    { id: 968, type: 'movie' },
+    { id: 306947, type: 'movie' },
+    { id: 5876, type: 'movie' },
+    { id: 769364, type: 'movie' },
+    { id: 393184, type: 'movie' },
+    { id: 742, type: 'movie' },
+    { id: 34435, type: 'tv' },
+    { id: 117978, type: 'movie' },
+    { id: 204223, type: 'tv' },
+    { id: 159037, type: 'movie' },
+    { id: 21484, type: 'movie' },
+    { id: 10294, type: 'movie' },
+    { id: 44156, type: 'tv' }
+]
+
 // const minVotes = currentFilters
 //Movies
 const fetchMovies = async function (page = 1) {
@@ -158,7 +178,7 @@ const fetchMovies = async function (page = 1) {
     try {
         const isArabic = currentFilters.language === "ar";
 
-        const minVote = isArabic ? 5 : (currentFilters.keyword ? 5 : 30);
+        const minVote = isArabic ? 5 : (currentFilters.keyword ? 5 : voteCount);
         const effectiveMinRating = currentFilters.minRating || (isArabic ? '5.5' : '');
 
         let movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=${currentFilters.sortBy}&page=${page}&vote_count.gte=${minVote}&include_adult=false`;
@@ -199,6 +219,8 @@ const fetchMovies = async function (page = 1) {
             const image = document.createElement('img');
             image.src = `https://image.tmdb.org/t/p/w500${item.poster_path}`;
             image.alt = item.title;
+            image.draggable = false;
+            link.draggable = false;
             link.append(image);
 
             if (movieGrid) movieGrid.append(link);
@@ -397,6 +419,8 @@ const tvImage = async function (page = 1) {
             image.src = `https://image.tmdb.org/t/p/w500${item.poster_path}`
             image.alt = item.title
             link.append(image)
+            link.draggable = false;
+            image.draggable = false;
             tvGrid.append(link);
 
         })
@@ -698,6 +722,12 @@ const renderDetailsTv = function (tv) {
 
     }
 
+    hiddenGems.forEach(item => {
+        if (item.id === tv.id && item.type === 'tv') {
+            document.querySelector('.gem').classList.remove('hidden')
+        }
+    });
+
 
     tagline.textContent = tv.tagline;
     overview.textContent = tv.overview;
@@ -980,6 +1010,12 @@ const spans = function (movie) {
 
     }
 
+    hiddenGems.forEach(item => {
+        if (item.id === movie.id && item.type === 'movie') {
+            document.querySelector('.gem').classList.remove('hidden')
+        }
+    });
+
     document.querySelector('.language-span').textContent = formatedLanguage(movie.original_language);
     document.querySelector('.budget-span').textContent = formatedCurrency(movie.budget) || "N/A";
     document.querySelector('.revenue-span').textContent = formatedCurrency(movie.revenue) || "N/A";
@@ -1183,6 +1219,8 @@ const fetchSearch = async function (query, page = 1) {
             image.src = imageUrl(item.poster_path, 'w500');
             image.alt = displayTitle;
             link.append(image);
+            image.draggable = false;
+            link.draggable = false;
             if (searchResults) searchResults.append(link);
 
         })
@@ -1426,17 +1464,24 @@ const heroMetaData = document.querySelector('#hero-meta');
 
 
 
-const truncateText = function (text, maxLength = 110) {
+const truncateText = function (text, maxLength = 105) {
     if (!text) return;
-    return text.length > maxLength ? text.slice(0, maxLength).trim() + '...' : text;
+    const subString = text.slice(0, maxLength)
+    return text.length > maxLength ? text.slice(0, subString.lastIndexOf(' ')).trim() + '...' : text;
 };
+
+// function truncateOverview(text, maxLength = 110) {
+//   if (!text || text.length <= maxLength) return text;
+
+//   const subString = text.substring(0, maxLength);
+//   return subString.substring(0, subString.lastIndexOf(' ')) + '...';
+// }
 
 
 const renderHero = async function (item) {
     if (!heroTitle) return
     const { media_type, data } = item;
     const isTv = media_type === 'tv';
-    console.log("data", data);
     const logoObj = data.images?.logos?.find(logo => logo.iso_639_1 === "en") || data.images?.logos?.[0];
     const logoPath = logoObj ? logoObj.file_path : null;
 
@@ -1546,7 +1591,6 @@ const fetchHomepageBackdrops = async function () {
     startAutoplay();
 };
 
-fetchHomepageBackdrops();
 
 const heroTrailerBtn = document.querySelector('#hero-trailer-btn');
 const heroDetails = document.querySelector('#hero-details-link');
@@ -1573,6 +1617,15 @@ if (heroTrailerBtn) {
             trailerName();
         } else {
             alert("No trailer found");
+        }
+        console.log(currentItem)
+
+        if (currentItem.media_type === 'tv') {
+            document.querySelector('.trailer-name').textContent = `${currentItem.data.name} - ${mainTrailer.type || 'Trailer'}`
+
+
+        } else {
+            document.querySelector('.trailer-name').textContent = `${currentItem.data.title} - ${mainTrailer.type || 'Trailer'}`
         }
     });
 
@@ -1665,6 +1718,8 @@ const renderPopularHome = async function (mediaType = 'movie') {
         link.href = `${detailsPage}?id=${el.id}`
         link.classList.add('poster-link');
         link.append(image);
+        image.draggable = false;
+        link.draggable = false;
         popularNow.append(link);
 
     });
@@ -1678,8 +1733,6 @@ popularTab.forEach(tab => {
         console.log('hello')
     });
 });
-
-renderPopularHome('movie');
 
 //Highly Rated 
 const highlyRated = document.querySelector('.highly-rated-main');
@@ -1705,40 +1758,26 @@ const renderHighlyRated = async function () {
     tvAndMovie.sort((a, b) => b.vote_average - a.vote_average);
     console.log("TV and movie", tvAndMovie);
 
-    const mediaType =
-        tvAndMovie.forEach(item => {
-            const image = document.createElement('img');
-            image.alt = item.first_air_date ? item.name : item.title;
-            image.classList.add('highly-rated-poster');
-            image.src = imageUrl(item.poster_path, 'w500')
-            const link = document.createElement('a');
-            link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
-            link.classList.add('highly-rated-link');
-            link.append(image);
-            highlyRated.append(link);
+    tvAndMovie.forEach(item => {
+        const image = document.createElement('img');
+        image.alt = item.first_air_date ? item.name : item.title;
+        image.classList.add('highly-rated-poster');
+        image.src = imageUrl(item.poster_path, 'w500')
+        const link = document.createElement('a');
+        link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
+        link.classList.add('highly-rated-link');
+        link.append(image);
+        image.draggable = false;
+        link.draggable = false;
+        highlyRated.append(link);
 
 
-        })
+    })
 
 
 }
 
-const hiddenGems = [
-    { id: 968, type: 'movie' },
-    { id: 306947, type: 'movie' },
-    { id: 5876, type: 'movie' },
-    { id: 769364, type: 'movie' },
-    { id: 393184, type: 'movie' },
-    { id: 742, type: 'movie' },
-    { id: 34435, type: 'tv' },
-    { id: 117978, type: 'movie' },
-    { id: 204223, type: 'tv' },
-    { id: 159037, type: 'movie' },
-    { id: 21484, type: 'movie' },
-    { id: 10294, type: 'movie' },
-    { id: 44156, type: 'tv' }
-]
-renderHighlyRated();
+
 
 //Hidden Gems
 const renderGems = async function () {
@@ -1761,12 +1800,13 @@ const renderGems = async function () {
         link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
         link.classList.add('hidden-gem-link');
         link.append(image);
+        image.draggable = false;
+        link.draggable = false;
         hiddenGemData.append(link);
     });
 
 
 }
-renderGems();
 
 const getDaysAgo = function (daysAgo) {
     const d = new Date();
@@ -1804,21 +1844,86 @@ const renderNew = async function () {
         const image = document.createElement('img');
         image.alt = item.first_air_date ? item.name : item.title;
         image.classList.add('new-poster');
-        image.src = imageUrl(item.poster_path, 'w500')
+        image.src = imageUrl(item.poster_path, 'w500');
+
         const link = document.createElement('a');
         link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
         link.classList.add('new-link');
         link.append(image);
+        image.draggable = false;
+        link.draggable = false;
         newMain.append(link);
     });
 }
 
-renderNew();
+const getDaysInFuture = function (daysAhead) {
+    const d = new Date();
+    d.setDate(d.getDate() + daysAhead);
+    return d.toISOString().split('T')[0];
+}
 
-const seeMoreNew = document.querySelector('.new-releases');
 
-seeMoreNew.addEventListener('click', function () {
-    currentFilters.sortBy = 'primary_release_date.desc';
-    fetchMovies();
-    console.log("Hello")
-})
+const renderComingSoon = async function () {
+
+    const upComingMain = document.querySelector('.upcoming-main');
+    if (!upComingMain) return;
+
+    const today = getDaysAgo(0);
+    const threeMonths = getDaysInFuture(50);
+
+    const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&primary_release_date.gte=${today}&with_original_language=en&include_adult=false`;
+
+
+    const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=popularity.desc&first_air_date.gte=${today}&with_original_language=en&include_adult=false`;
+
+    const [movieRes, tvRes] = await Promise.all([
+        fetch(movieUrl, options),
+        fetch(tvUrl, options)
+    ]);
+    const movieData = await movieRes.json();
+    const tvData = await tvRes.json();
+
+    const movieSliced = movieData.results.slice(0, 7);
+    const tvSliced = tvData.results.slice(0, 7);
+    const movieAndTv = [...movieSliced, ...tvSliced];
+
+    movieAndTv.sort((a, b) => b.popularity - a.popularity);
+    console.log("coming soon", movieAndTv);
+
+    movieAndTv.forEach(item => {
+        if (!item.poster_path) return;
+        const image = document.createElement('img')
+        image.alt = item.first_air_date ? item.name : item.title;
+        image.classList.add('upcoming-poster');
+        image.src = imageUrl(item.poster_path, 'w500');
+        image.draggable = false;
+        const link = document.createElement('a');
+        link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
+        link.classList.add('upcoming-link');
+        link.append(image);
+        link.draggable = false;
+        upComingMain.append(link);
+
+    })
+}
+
+
+const homeReady = Promise.all([
+    fetchHomepageBackdrops(),
+    renderPopularHome('movie'),
+    renderHighlyRated(),
+    renderGems(),
+    renderNew(),
+    renderComingSoon()
+
+
+]);
+
+if (window.location.hash) {
+    homeReady.then(() => {
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+            target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }
+    });
+}

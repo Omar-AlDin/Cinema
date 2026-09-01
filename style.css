@@ -425,6 +425,8 @@ nav a:hover {
     overflow-x: auto;
     padding-bottom: 10px;
     overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
     /* overscroll-behavior: contain; */
 
 }
@@ -869,8 +871,6 @@ nav a:hover {
     cursor: pointer;
     user-select: none;
     will-change: transform;
-
-
 }
 
 .genre-card:hover {
@@ -1052,16 +1052,31 @@ nav a:hover {
 }
 
 .genre-header-home,
-.new-header {
+.new-header,
+.highly-rated-header,
+.popular-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
+.link .see-all {
+    display: inline-block;
+    margin-right: 25px;
+}
+
+.link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    /* margin-top: 50px; */
+    top: 28px;
+}
+
+
 .see-all {
     text-decoration: none;
     color: #a0a0a0;
-    margin-bottom: 2rem;
     font-size: 14px;
     transition: color 0.2s ease;
     margin-bottom: 10px;
@@ -1082,8 +1097,8 @@ nav a:hover {
     color: inherit;
     display: flex;
     user-select: none;
-
 }
+
 
 .genre-breadcrumb {
     padding: 12px 20px 0 20px;
@@ -1158,14 +1173,19 @@ nav a:hover {
 
 }
 
+.home-section-title.movie-night {
+    border-left: 3px solid #f59e0b;
+
+}
+
 .main-homepage {
-    /* max-width: 1600px; */
+    max-width: 1600px;
     max-width: var(--content-max);
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    padding-left: var(--content-pad);
-    padding-right: var(--content-pad);
+    /* padding-left: var(--content-pad);
+    padding-right: var(--content-pad); */
     margin-top: 1.5rem;
     /* gap: 100px; */
 
@@ -1175,10 +1195,11 @@ nav a:hover {
 .highly-rated-header,
 .hidden-gem-header,
 .genre-header-home,
-.new-header {
+.new-header,
+.upcoming-header {
     margin-top: 50px;
+    scroll-margin-top: 50px;
 }
-
 
 
 .main-movie-night {
@@ -1206,7 +1227,7 @@ nav a:hover {
     gap: 6px;
     text-decoration: none;
     color: #0f1014;
-    background-color: #00adb5;
+    background-color: #f59e0b;
     font-weight: 600;
     padding: 10px 18px;
     border-radius: 8px;
@@ -1214,9 +1235,9 @@ nav a:hover {
 }
 
 .learn-more:hover {
-    background-color: #00c2cb;
+    background-color: #f8a10a;
     transform: translateX(2px);
-    box-shadow: 0 4px 14px rgba(0, 173, 181, 0.2);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
 }
 
 
@@ -1246,7 +1267,8 @@ nav a:hover {
 
 .highly-rated-main,
 .hidden-gem-main,
-.new-main {
+.new-main,
+.upcoming-main {
     /* padding: 0px 20px 20px 20px; */
     display: flex;
     gap: 10px;
@@ -1260,6 +1282,9 @@ nav a:hover {
 
 }
 
+.upcoming-main {
+    margin-bottom: 20px;
+}
 
 .popular-tab {
     background: #1c2126;
@@ -1295,7 +1320,27 @@ nav a:hover {
 .popular-now img,
 .highly-rated-main img,
 .hidden-gem-main img,
-.new-main img {
+.new-main img,
+.upcoming-main img,
+.movies-grid img,
+.tv-grid img,
+.search-results img,
+.poster-link,
+.highly-rated-link,
+.hidden-gem-link,
+.new-link,
+.upcoming-link,
+.genre-container-home a {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.popular-now img,
+.highly-rated-main img,
+.hidden-gem-main img,
+.new-main img,
+.upcoming-main img {
     flex-shrink: 0;
     width: 150px;
     height: 210px;
@@ -1307,13 +1352,13 @@ nav a:hover {
     outline-offset: -3px;
     z-index: 10;
     z-index: 5;
-
 }
 
 .popular-now img:hover,
 .highly-rated-main img:hover,
 .hidden-gem-main img:hover,
-.new-main img:hover {
+.new-main img:hover,
+.upcoming-main img:hover {
     transform: scale(1.06);
     outline: 2px solid coral;
     outline-width: medium;
@@ -1736,26 +1781,57 @@ nav a:hover {
     stroke-width: 2.2;
 }
 
-/* mobile */
-@media (min-width: 360px) and (max-width: 699px) {
-    .on-backdrop {
-        left: 30px;
-        right: 24px;
-    }
+.gem {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.6px;
+    text-decoration: none;
+    position: relative;
+}
 
-    .backdrop-night img {
-        height: clamp(340px, 60vw, 450px);
-    }
-
-    .coming-soon {
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-bottom: 20px;
-
-    }
-
+.tooltip {
+    visibility: hidden;
+    width: 130px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%) translateY(-30%);
+    font-size: 10px;
 
 }
+
+.gem:hover .tooltip {
+    visibility: visible;
+}
+
+.gem-badge {
+    width: 12px;
+    height: 12px;
+    stroke-width: 2.2;
+}
+
+.title {
+    display: inline-flex;
+    gap: 15px;
+    align-items: center;
+
+}
+
+
 
 .genre-badge {
     position: absolute;
@@ -1784,8 +1860,271 @@ nav a:hover {
     stroke-width: 2.5;
 }
 
+.header-movie-night {
+    display: inline-flex;
+    gap: 5px;
+}
+
+.header-movie-night .header-icon {
+    color: #f59e0b;
+    width: 25px;
+    height: 25px;
+}
+
 .hidden {
     display: none;
+}
+
+
+/* mobile */
+@media (max-width: 767px) {
+
+    .on-backdrop {
+        left: 17px;
+        right: 60px;
+
+    }
+
+    .backdrop-night img {
+        height: clamp(340px, 60vw, 450px);
+    }
+
+    .coming-soon {
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom: 20px;
+
+    }
+
+    .genre-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .genre-container-home {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .card-img {
+        position: absolute;
+        left: -3px;
+        top: -5px;
+        width: 60%;
+        height: 115%;
+        clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
+        transform: rotate(-16deg);
+
+    }
+
+    .genre-title {
+        font-size: 0.6rem;
+    }
+
+    .genre-card.documentary .genre-title {
+        font-size: 0.54rem;
+
+    }
+
+
+    .genre-card.documentary-tv .genre-title {
+        font-size: 0.54rem;
+
+    }
+
+    .genre-card.thriller-tv .genre-title {
+        font-size: 0.54rem;
+
+    }
+
+
+    .genre-card.animation .genre-title {
+        font-size: 0.54rem;
+        margin-right: -6px;
+    }
+
+    .genre-card.thriller .genre-title {
+        margin-right: -4px;
+    }
+
+    .genre-card.crime .genre-title {
+        text-align: right;
+        margin-right: 5px;
+    }
+
+    .genre-card.comedy-tv {
+        margin-right: -5px;
+
+    }
+
+    .genre-card.sci-fi .genre-title {
+        text-align: right;
+        margin-right: 5px;
+    }
+
+    .genre-card.drama .genre-title {
+        text-align: right;
+        margin-right: 1px;
+    }
+
+    .genre-card.romance .genre-title {
+        text-align: right;
+        margin-right: -5px;
+    }
+
+    .genre-card.drama-tv .genre-title {
+        text-align: right;
+        margin-right: 1px;
+    }
+
+    .genre-card.crime-tv .genre-title {
+        text-align: right;
+        margin-right: 3px;
+    }
+
+    .genre-card.action-tv .genre-title {
+        font-size: 0.54rem;
+        margin-right: -5px;
+
+    }
+
+    .genre-card.animation-tv .genre-title {
+        font-size: 0.54rem;
+        margin-right: -6px;
+    }
+
+    .genre-card.documentary-tv .genre-title {
+        margin-right: -6px;
+    }
+
+    .genre-card.documentary .genre-title {
+        margin-right: -6px;
+    }
+
+    .genre-card.thriller-tv .genre-title {
+        margin-right: -2.5px;
+    }
+
+    .genre-card.war .genre-title {
+        margin-right: -2.2px;
+    }
+
+    .genre-card.sci-fi-tv .genre-title {
+        margin-right: -2px;
+    }
+
+    .genre-card.paranormal .genre-title {
+        font-size: 0.52rem;
+        margin-right: -10px;
+
+    }
+
+    .genre-card.monster .genre-title {
+        margin-right: -5px;
+
+    }
+
+    .genre-card.psychological .genre-title {
+        margin-right: -3px;
+
+    }
+
+
+    .genre-card.found .genre-title {
+        margin-right: -2px;
+
+    }
+
+    .genre-card.slasher .genre-title {
+        margin-right: -2px;
+
+    }
+
+    .genre-card {
+        aspect-ratio: 16 / 9.3;
+    }
+
+
+    .genre-badge {
+        bottom: 3px;
+        right: 5px;
+        font-size: 6.5px;
+        padding: 2px 6px;
+
+    }
+
+    .genre-badge .lucide {
+
+        width: 10px;
+        height: 15px;
+        stroke-width: 2.5;
+    }
+
+
+    .home-backdrop {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+
+    }
+
+    .hero-slide {
+        background-position: center;
+    }
+
+    .hero-carousel {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+    }
+
+
+    .home-hero-overview {
+        font-size: 12px;
+        color: #d1d5db;
+        margin-bottom: 12px;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+        height: 2.8em;
+    }
+
+    .home-hero-info {
+        position: absolute;
+        bottom: 30px;
+        left: 20px;
+        right: 20px;
+        max-width: none;
+        z-index: 2;
+    }
+
+    .hero-title-logo {
+        display: block;
+        object-fit: contain;
+        object-position: left bottom;
+        width: 180px;
+        height: 50px;
+        margin: 0;
+        margin-bottom: -10px;
+
+    }
+
+    .title-info-back {
+        gap: 5px;
+        font-size: 10.2px;
+        margin-bottom: 12px;
+    }
+
+    .trailer-btn,
+    .btn-details {
+        font-size: 0.60rem;
+    }
+
+    .trailer-btn {
+        font-size: 0.55rem;
+    }
+
+
+
 }
 
 /*tablet */
@@ -1813,6 +2152,9 @@ nav a:hover {
 
     }
 
+
+
+
 }
 
 /*laptops*/
@@ -1831,8 +2173,5 @@ nav a:hover {
         margin-right: 10px;
 
     }
-
-
-
 
 }

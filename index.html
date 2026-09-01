@@ -52,20 +52,33 @@
         </section>
         <section class="main-homepage">
             <div class="popular-header">
-                <h2 class="home-section-title">Popular Now</h2>
-                <div class="toggle-btn">
-                    <button class="popular-tab active" data-type="movie">Movies</button>
-                    <button class="popular-tab" data-type="tv">TV Shows</button>
+                <div class="popular-toggles">
+                    <h2 class="home-section-title">Popular Now</h2>
+
+
+                    <div class="toggle-btn">
+                        <button class="popular-tab active" data-type="movie">Movies</button>
+                        <button class="popular-tab" data-type="tv">TV Shows</button>
+                    </div>
                 </div>
+                <div class="link">
+                    <a href="browse.html?sort=popularity.desc" class="see-all">See all
+                        →</a>
+                </div>
+
             </div>
             <div class="popular-now">
                 <!-- <img src="movie-1.jpg"> -->
             </div>
 
             <div class="movie-night">
-                <h2 class="home-section-title">Movie Night</h2>
+                <h2 class="home-section-title movie-night">Movie Night</h2>
                 <div class="main-movie-night">
-                    <h4>🍿 Got a place? Start a Movie Night.</h4>
+                    <div class="header-movie-night">
+                        <span><i data-lucide="popcorn" class="header-icon"></i></span>
+                        <h4>Got a place? Start a Movie Night.</h4>
+
+                    </div>
                     <p>Bring people together, choose a movie, and create a night around it.</p>
                     <a href="movie-night.html" class="learn-more">Learn More →</a>
                 </div>
@@ -73,10 +86,13 @@
 
             <div class="highly-rated-header">
                 <h2 class="home-section-title">Highly Rated</h2>
+                <a href="browse.html?sort=vote_average.desc&vote_count.gte=300" class="see-all">See all
+                    →</a>
             </div>
-            <div class="highly-rated-main"></div>
+            <div class=" highly-rated-main">
+            </div>
 
-            <div class="hidden-gem-header">
+            <div class="hidden-gem-header" id="hidden-gems">
                 <h2 class="home-section-title">Hidden Gems</h2>
             </div>
             <div class="hidden-gem-main"></div>
@@ -88,7 +104,7 @@
             </div>
             <div class="genre-container-home">
                 <a href="sub-genre.html?type=movie&genre=horror" class="genre-card horror"
-                    style="--genre-color: #8b0000">
+                    style="--genre-color: #8b0000" draggable="false">
                     <div class="card-img">
                         <img src="movie-4.jpg" alt="Horror" loading="lazy">
                     </div>
@@ -136,19 +152,23 @@
 
             <div class="new-header">
                 <h2 class="home-section-title">New Releases</h2>
-                <a href="browse.html?sort=primary_release_date.desc" class="see-all new-releases">See all →</a>
+                <a href="browse.html?sort=primary_release_date.desc" class="see-all">See all →</a>
 
             </div>
             <div class="new-main"></div>
 
+            <div class="upcoming-header">
+                <h2 class="home-section-title">Coming Soon</h2>
 
+            </div>
+            <div class="upcoming-main"></div>
         </section>
     </main>
     <div class="modal hidden">
         <div class="overlay">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Official Trailer</h3>
+                    <h3 class="trailer-name"></h3>
                     <button class="close-modal">&times;</button>
                 </div>
                 <iframe class="trailer-frame" src="" allowFullscreen></iframe>
