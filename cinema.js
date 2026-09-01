@@ -706,7 +706,7 @@ const renderDetailsTv = function (tv) {
 
 
     if (releaseDate <= today) {
-        dateLabel.textContent = "Release Date"
+        dateLabel.textContent = "Release Date:"
         dateSpan.textContent = formatedDateOnly(tv.first_air_date) || "N/A";
         document.querySelector('.origin-country').textContent = formatedCountry(tv.origin_country[0]) || "N/A";
         status.classList.remove('hidden')
@@ -995,7 +995,7 @@ const spans = function (movie) {
     const today = new Date();
     console.log(releaseDate, today)
     if (releaseDate <= today) {
-        dateLabel.textContent = "Release Date"
+        dateLabel.textContent = "Release Date:"
         dateSpan.textContent = formatedDateOnly(movie.release_date);
         document.querySelector('.origin-country').textContent = formatedCountry(movie.origin_country[0]);
 

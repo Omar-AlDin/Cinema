@@ -107,7 +107,7 @@ nav a:hover {
 }
 
 .backdrop {
-    height: clamp(500px, 32vw, 520px);
+    height: clamp(450px, 32vw, 520px);
     /* height: 500px; */
 
     width: 100%;
@@ -187,9 +187,6 @@ nav a:hover {
     margin-top: 1px;
 }
 
-/* .details-info h2 {
-    font-size: 25px;
-} */
 
 .character-name {
     color: #a0a0a0;
@@ -556,20 +553,16 @@ nav a:hover {
 
 
 .main-nav {
-    /* max-width: 1400px; */
-    max-width: var(--content-max);
     margin: 0 auto;
-    /* padding: 15px 20px; */
     padding: 15px var(--content-pad);
+    max-width: var(--content-max);
 }
 
 .browse-container {
-    max-width: 1400px;
+    max-width: var(--content-max);
     margin: 0 auto;
     padding: 20px;
     padding-top: 20px;
-
-
 
 }
 
@@ -577,11 +570,26 @@ nav a:hover {
     display: flex;
     gap: 15px;
     margin-bottom: 20px;
-    /* padding: 20px;
-    max-width: 1505px;
-    margin: 0 auto; */
+    /* padding: 20px; */
+    /* max-width: 1505px;
+    margin: 0 auto;  */
 
 
+}
+
+html {
+    scrollbar-gutter: stable;
+}
+
+:root {
+    --bg-surface: #161f28;
+    --bg-input: #1e2936;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --accent-red: #e50914;
+    --text-primary: #ffffff;
+    --text-muted: #8c9ba5;
+    --radius-sm: 8px;
+    --content-pad: 20px;
 }
 
 .select-section {
@@ -596,6 +604,52 @@ nav a:hover {
     display: flex;
     gap: 5px;
     flex-direction: column;
+}
+
+.select-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.select-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 36px 10px 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+
+    /* Custom Arrow SVG Icon */
+    background: var(--bg-input) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238c9ba5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px;
+}
+
+.select-group select:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background-color: #243242;
+}
+
+.select-group select:focus {
+    border-color: var(--accent-red);
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+}
+
+.select-group select option {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+    padding: 10px;
 }
 
 #scroll-sentinel {
@@ -837,7 +891,7 @@ nav a:hover {
 
 
 .genre-section {
-    max-width: 1400px;
+    max-width: var(--content-max);
     margin: 0 auto;
 }
 
@@ -1198,19 +1252,10 @@ nav a:hover {
 .genre-header-home,
 .new-header,
 .upcoming-header {
-    margin-top: 20px;
+    margin-top: 50px;
     scroll-margin-top: 50px;
 }
 
-/* .main-movie-night,
-.highly-rated-main,
-.hidden-gem-main,
-.genre-container-home,
-.new-main,
-.upcoming-main {
-    margin-bottom: 35px;
-    scroll-margin-top: 50px;
-} */
 
 .genre-container-home {
     margin-bottom: 30px;
@@ -1892,7 +1937,7 @@ nav a:hover {
 
 
 /* mobile */
-@media (max-width: 767px) {
+@media (max-width: 599px) {
 
     .on-backdrop {
         left: 17px;
@@ -1909,6 +1954,22 @@ nav a:hover {
         margin-right: 10px;
         margin-bottom: 20px;
 
+    }
+
+
+    .movies-grid,
+    .tv-grid,
+    .search-results {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .movies-grid img,
+    .tv-grid img,
+    .search-results img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 2 / 3;
     }
 
     .genre-container {
@@ -2142,6 +2203,62 @@ nav a:hover {
         margin-bottom: 0;
     }
 
+    .movie-night,
+    .highly-rated-header,
+    .hidden-gem-header,
+    .genre-header-home,
+    .new-header,
+    .upcoming-header {
+        margin-top: 20px;
+        scroll-margin-top: 50px;
+    }
+
+    .main-movie-night {
+        margin-bottom: 25px;
+
+    }
+
+    :root {
+        --content-pad: 20px
+    }
+
+    .main-nav {
+        padding: 15px var(--content-pad);
+        gap: 10px;
+    }
+
+    .main-nav a {
+        font-size: 15px;
+    }
+
+
+    .details-bottom {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .left-column {
+        position: static;
+        margin: 0;
+        width: 100%;
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .poster {
+        position: static;
+        width: 110px;
+        flex-shrink: 0;
+    }
+
+    .title {
+        position: static;
+        display: flex;
+    }
+
+    .status {
+        display: none;
+    }
 }
 
 /*tablet */
