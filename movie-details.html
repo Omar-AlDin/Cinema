@@ -21,7 +21,6 @@
             <a href="genres.html">Genres</a>
             <a href="browse.html">Browse</a>
             <a href="search.html">Search</a>
-
         </nav>
     </header>
     <div class="backdrop-wrapper">
@@ -37,14 +36,48 @@
             <aside class="left-column">
                 <img class="poster hidden" src="" alt="">
 
+
+                <div class="beside-poster">
+                    <div class="title">
+                        <h2 id="title"></h2>
+
+                        <a href="index.html#hidden-gems" class="gem hidden ">
+                            <i data-lucide="gem" class="gem-badge"></i>
+                            <span>Gem</span>
+                            <span class="tooltip">Our hidden gems</span>
+                        </a>
+
+                    </div>
+
+                    <div class="title-info">
+
+                        <span id="release-year"></span>
+                        <span class="dot">•</span>
+                        <span id="movie-certification"></span>
+                        <span class="dot">•</span>
+                        <span id="runtime"></span>
+
+                    </div>
+
+                    <div class="genres hidden">
+                        <span class="genre-pill"></span>
+                        <span class="genre-pill"></span>
+                        <span class="genre-pill"></span>
+                    </div>
+
+
+                    <button class="btn-trailer hidden">▶ Watch Trailer</button>
+
+
+
+                </div>
+
                 <div class="genres hidden">
                     <span class="genre-pill"></span>
                     <span class="genre-pill"></span>
                     <span class="genre-pill"></span>
                 </div>
-
                 <button class="btn-trailer hidden">▶ Watch Trailer</button>
-
                 <div class="status">
                     <div class="date-group">
                         <p class="date-label"></p>
@@ -61,8 +94,11 @@
                     </div>
 
                 </div>
+
+
             </aside>
-            <div class="right-column">
+
+            <section class="right-column">
                 <div class="details-info">
                     <div class="title">
                         <h2 id="title"></h2>
@@ -74,23 +110,34 @@
                         </a>
 
                     </div>
-                    <div class="title-info">
-                        <span class="rating">⭐ <strong id="movie-rating"></strong><span
-                                class="max-score">/10</span></span>
+                    <div class="title-info-desktop">
 
+                        <div class="title-info">
+                            <!-- <span class="rating">⭐<strong id="movie-rating"></strong><span
+                                    class="max-score">/10</span></span>
+
+                            <span class="upcoming hidden">
+                                <i data-lucide="calendar" class="icon-badge"></i>
+                                <span>UPCOMING</span>
+                            </span> -->
+
+                            <span class="dot">•</span>
+                            <span id="release-year"></span>
+                            <span class="dot">•</span>
+                            <span id="movie-certification"></span>
+                            <span class="dot">•</span>
+                            <span id="runtime"></span>
+                        </div>
+                    </div>
+                    <div class="rating-mobile">
                         <span class="upcoming hidden">
                             <i data-lucide="calendar" class="icon-badge"></i>
                             <span>UPCOMING</span>
+
                         </span>
-
-                        <span class="dot">•</span>
-                        <span id="release-year"></span>
-                        <span class="dot">•</span>
-                        <span id="movie-certification"></span>
-                        <span class="dot">•</span>
-                        <span id="runtime"></span>
+                        <span class="rating">⭐ <strong id="movie-rating"></strong><span
+                                class="max-score">/10</span></span>
                     </div>
-
                     <p class="tagline"></p>
                     <p class="overview">
 
@@ -130,6 +177,7 @@
                     </div>
                 </section>
 
+            </section>
         </section>
         <!-- repeat for however many cast dummy entries you want -->
 
