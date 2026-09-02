@@ -39,7 +39,7 @@
 
                 <div class="beside-poster">
                     <div class="title">
-                        <h2 id="title"></h2>
+                        <h2 class="js-title"></h2>
 
                         <a href="index.html#hidden-gems" class="gem hidden ">
                             <i data-lucide="gem" class="gem-badge"></i>
@@ -51,11 +51,11 @@
 
                     <div class="title-info">
 
-                        <span id="release-year"></span>
+                        <span class="js-release-year"></span>
                         <span class="dot">•</span>
-                        <span id="movie-certification"></span>
+                        <span class="js-movie-certification"></span>
                         <span class="dot">•</span>
-                        <span id="runtime"></span>
+                        <span class="js-runtime"></span>
 
                     </div>
 
@@ -72,36 +72,38 @@
 
                 </div>
 
-                <div class="genres hidden">
-                    <span class="genre-pill"></span>
-                    <span class="genre-pill"></span>
-                    <span class="genre-pill"></span>
-                </div>
-                <button class="btn-trailer hidden">▶ Watch Trailer</button>
-                <div class="status">
-                    <div class="date-group">
-                        <p class="date-label"></p>
-                        <span class="date-span"></span>
-                        </p>
-                    </div>
-                    <p class="revenue">Country: <span class="origin-country"></span></p>
-                    <p class="language">Original Language: <span class="language-span"></span></p>
-                    <div class="budget-revenue">
-                        <p class="budget">Budget: <span class="budget-span"></span></p>
+                <div class="genre-status-desktop">
 
-                        <p class="revenue">Revenue: <span class="revenue-span"></span></p>
-
+                    <div class="genres hidden">
+                        <span class="genre-pill"></span>
+                        <span class="genre-pill"></span>
+                        <span class="genre-pill"></span>
                     </div>
 
+                    <button class="btn-trailer hidden">▶ Watch Trailer</button>
+                    <div class="status">
+                        <div class="date-group">
+                            <p class="date-label"></p>
+                            <span class="date-span"></span>
+                        </div>
+                        <p class="revenue">Country: <span class="origin-country"></span></p>
+                        <p class="language">Original Language: <span class="language-span"></span></p>
+                        <div class="budget-revenue">
+                            <p class="budget">Budget: <span class="budget-span"></span></p>
+
+                            <p class="revenue">Revenue: <span class="revenue-span"></span></p>
+
+                        </div>
+
+                    </div>
+
                 </div>
-
-
             </aside>
 
             <section class="right-column">
                 <div class="details-info">
-                    <div class="title">
-                        <h2 id="title"></h2>
+                    <div class="title-desktop">
+                        <h2 class="js-title"></h2>
 
                         <a href="index.html#hidden-gems" class="gem hidden ">
                             <i data-lucide="gem" class="gem-badge"></i>
@@ -113,20 +115,20 @@
                     <div class="title-info-desktop">
 
                         <div class="title-info">
-                            <!-- <span class="rating">⭐<strong id="movie-rating"></strong><span
+                            <span class="rating">⭐<strong class="js-movie-rating"></strong><span
                                     class="max-score">/10</span></span>
 
                             <span class="upcoming hidden">
                                 <i data-lucide="calendar" class="icon-badge"></i>
                                 <span>UPCOMING</span>
-                            </span> -->
+                            </span>
 
                             <span class="dot">•</span>
-                            <span id="release-year"></span>
+                            <span class="js-release-year"></span>
                             <span class="dot">•</span>
-                            <span id="movie-certification"></span>
+                            <span class="js-movie-certification"></span>
                             <span class="dot">•</span>
-                            <span id="runtime"></span>
+                            <span class="js-runtime"></span>
                         </div>
                     </div>
                     <div class="rating-mobile">
@@ -135,7 +137,7 @@
                             <span>UPCOMING</span>
 
                         </span>
-                        <span class="rating">⭐ <strong id="movie-rating"></strong><span
+                        <span class="rating">⭐ <strong class="js-movie-rating"></strong><span
                                 class="max-score">/10</span></span>
                     </div>
                     <p class="tagline"></p>
@@ -160,11 +162,35 @@
 
 
                 </div>
+                <section class="mobile-metadata">
+                    <div class="production-details">
+                        <div class="production-details-header">
+                            <i data-lucide="clapperboard" class="icon-badge"></i>
+                            <span>Production Details</span>
+                        </div>
+                        <div class="date-group">
+                            <p class="date-label"></p>
+                            <span class="date-span"></span>
+                        </div>
+                        <p class="revenue">Country: <span class="origin-country"></span></p>
+                        <p class="language">Original Language: <span class="language-span"></span></p>
+                    </div>
+                    <div class="financials">
+                        <div class="financials-header">
+                            <i data-lucide="badge-dollar-sign" class="icon-badge"></i>
+                            <span>Financials</span>
+                        </div>
+                        <p class="budget">Budget: <span class="budget-span"></span></p>
+
+                        <p class="revenue">Revenue: <span class="revenue-span"></span></p>
+                    </div>
+                </section>
                 <section class="media-section">
                     <div class="media-nav">
-
+                        <h2 class="media-mobile">Media</h2>
                         <nav>
-                            <h2>Media</h2>
+                            <h2 class="media-desktop">Media</h2>
+
                             <button class="btn-popular" data-tab="popular">Most Popular</button>
                             <button class="btn-videos" data-tab="videos">Videos</button>
                             <button class="btn-backdrops" data-tab="backdrops">Backdrops</button>

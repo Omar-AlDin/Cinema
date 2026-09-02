@@ -45,7 +45,7 @@ const tvGrid = document.querySelector('.tv-grid')
 const totalPages = 50;
 const seenMovie = new Set();
 const seenTV = new Set();
-const genre = document.querySelector('.genres');
+const genreContainer = document.querySelectorAll('.genres');
 
 let currentFetchController = null;
 
@@ -490,6 +490,19 @@ document.querySelector('#tv-language-select')?.addEventListener('change', functi
 
 // --------------- Details Page -------------------------
 
+const setAllText = (selector, text) => {
+    document.querySelectorAll(selector).forEach(el => el.textContent = text);
+};
+
+const hideAll = (selector) => {
+    document.querySelectorAll(selector).forEach(el => el.classList.add('hidden'))
+}
+
+const showAll = (selector) => {
+    document.querySelectorAll(selector).forEach(el => el.classList.remove('hidden'))
+}
+
+
 //Image URL Function
 const imageUrl = (path, size = 'original') =>
     path ? `https://image.tmdb.org/t/p/${size}${path}` : 'placeholder.jpg';
@@ -502,34 +515,34 @@ const backdropImage = document.querySelector('.backdrop');
 const posterImage = document.querySelector('.poster');
 const actorsContainer = document.querySelector('.cast-list');
 const status = document.querySelector('.status');
-const releaseYear = document.querySelector('#release-year')
+// const releaseYear = document.querySelector('#release-year')
 if (posterImage) posterImage.classList.add('hidden');
-const cerEl = document.querySelector('#movie-certification')
-const runTime = document.querySelector('#runtime')
+// const cerEl = document.querySelector('#movie-certification')
+// const runTime = document.querySelector('#runtime')
 const tagline = document.querySelector('.tagline')
 const overview = document.querySelector('.overview')
-const title = document.querySelector('#title')
+// const title = document.querySelector('#title')
 
 
 const renderDetails = function (movie) {
 
-    if (title) title.textContent = movie.title;
+    setAllText('.js-title', movie.title);
 
-    const rating = document.querySelector('#movie-rating')
-    if (rating) rating.textContent = movie.vote_average.toFixed(1) || "N/A";
+    // const rating = document.querySelector('#movie-rating')
+    setAllText('.js-movie-rating', movie.vote_average.toFixed(1) || "N/A");
 
 
-    if (releaseYear) releaseYear.textContent = movie.release_date.split('-')[0];
+    setAllText('.js-release-year', movie.release_date.split('-')[0]);
 
     //Certificate
     const relDates = movie.release_dates?.results?.find(item => item.iso_3166_1 === movie.origin_country[0])
     const certificate = relDates?.release_dates?.find(cer => cer.certification != '')?.certification;
 
 
-    if (cerEl) cerEl.textContent = certificate || 'N/A';
+    setAllText('.js-movie-certification', certificate || 'N/A');
 
 
-    if (runTime) runTime.textContent = (movie.runtime / 60).toFixed(0) + "h" + ' ' + (movie.runtime % 60) + "m";
+    setAllText('.js-runtime', (movie.runtime / 60).toFixed(0) + "h" + ' ' + (movie.runtime % 60) + "m");
 
     if (tagline) tagline.textContent = movie.tagline || "";
 
@@ -546,22 +559,21 @@ const renderDetails = function (movie) {
         document.querySelector('#tab-title').textContent = `${movie.title} (${movie.release_date.split('-')[0]})`;
     }
 
-    const movieLanguage = formatedLanguage(movie.original_language)
-
 
     //Genre pills
-    if (genre) {
-        genre.innerHTML = '';
-        movie.genres.forEach(el => {
-            const pill = document.createElement('span');
-            pill.classList.add('genre-pill');
-            pill.textContent = el.name
-            genre.append(pill)
+
+    const renderGenrePills = function (genre) {
+        genreContainer.forEach(container => {
+            container.innerHTML = '';
+            genre.forEach(el => {
+                const pill = document.createElement('span');
+                pill.classList.add('genre-pill');
+                pill.textContent = el.name
+                container.append(pill);
+            });
         });
-
     }
-
-
+    renderGenrePills(movie.genres);
 
     //Cast
     if (actorsContainer) {
@@ -616,7 +628,7 @@ const creatorTv = document.querySelector('#creator-span');
 const ratingTv = document.querySelector('#rating-tv');
 //-------Rrender TV Shows------------
 const isTv = window.location.pathname.includes('tv-details.html');
-const dota = document.querySelector('.dot-time');
+// const dota = document.querySelector('.dot-time');
 const seasonScroller = document.querySelector('.season-scroller');
 const today = new Date();
 
@@ -640,17 +652,21 @@ const renderDetailsTv = function (tv) {
     ratingTv.textContent = tv.vote_average.toFixed(1);
 
 
-    if (genre) {
-        genre.classList.remove('hidden')
-        genre.innerHTML = '';
-        tv.genres.forEach(el => {
-            const pill = document.createElement('span');
-            pill.classList.add('genre-pill');
-            pill.textContent = el.name
-            genre.append(pill);
-        })
+    //Genres
+    const genrePills = function (genre) {
+        genreContainer.forEach(container => {
+            container.innerHTML = '';
+            genre.forEach(el => {
+                const pill = document.createElement('span');
+                pill.classList.add('genre-pill');
+                pill.textContent = el.name
+                container.append(pill);
+            });
+            container.classList.remove('hidden');
+        });
     }
 
+    genrePills(tv.genres);
 
     //release year
     function releaseYearRage(tv) {
@@ -667,14 +683,14 @@ const renderDetailsTv = function (tv) {
             const endYear = tv.last_air_date ? tv.last_air_date.split('-')[0] : 'Unknown';
 
             if (!endYear || startYear === endYear) {
-                releaseYear.textContent = `${startYear}`;
+                setAllText('.js-release-year', `${startYear}`);
                 return;
             }
-            releaseYear.textContent = `${startYear} – ${endYear}`;
+            setAllText('.js-release-year', `${startYear} – ${endYear}`);
             return;
 
         }
-        releaseYear.textContent = `${startYear} –`;
+        setAllText('.js-release-year', `${startYear} –`);
         return;
     }
 
@@ -684,7 +700,7 @@ const renderDetailsTv = function (tv) {
     //certification
     const rating = tv.content_ratings?.results || [];
     const certification = rating?.find(c => c.iso_3166_1 === tv.origin_country[0]) || rating?.find(c => c.iso_3166_1 === 'US') || rating[0];
-    cerEl.textContent = certification?.rating || "N/A";
+    setAllText('.js-tv-certification', certification?.rating || "N/A");
 
 
     //runtime
@@ -694,14 +710,14 @@ const renderDetailsTv = function (tv) {
     }
 
     if (runTimes) {
-        runTime.textContent = `${runTimes}m`;
+        setAllText('.js-runtime', `${runTimes}m`);
     } else {
-        runTime.style.display = 'none';
-        dota.style.display = 'none';
+        setAllDisplay('.js-runtime', 'none');
+        setAllDisplay('.dot-time', 'none');
     }
 
 
-    if (trailerButton) trailerButton.classList.remove('hidden');
+    if (trailerButton) showAll('.btn-trailer');
 
 
 
@@ -724,7 +740,7 @@ const renderDetailsTv = function (tv) {
 
     hiddenGems.forEach(item => {
         if (item.id === tv.id && item.type === 'tv') {
-            document.querySelector('.gem').classList.remove('hidden')
+            showAll('.gem');
         }
     });
 
@@ -759,7 +775,7 @@ const renderDetailsTv = function (tv) {
 
     document.querySelector('.language-span').textContent = formatedLanguage(tv.original_language);
 
-    if (title) title.textContent = tv.original_name;
+    setAllText('.js-title', tv.original_name);
 
     document.querySelector('.next-episode').textContent = nextEpisode(tv.next_episode_to_air?.air_date);
 
@@ -995,36 +1011,36 @@ const spans = function (movie) {
     const today = new Date();
     console.log(releaseDate, today)
     if (releaseDate <= today) {
-        dateLabel.textContent = "Release Date:"
-        dateSpan.textContent = formatedDateOnly(movie.release_date);
-        document.querySelector('.origin-country').textContent = formatedCountry(movie.origin_country[0]);
+        setAllText('.date-label', "Release Date:");
+        setAllText('.date-span', formatedDateOnly(movie.release_date) || "N/A");
+        setAllText('.origin-country', formatedCountry(movie.origin_country[0]) || "N/A");
 
     } else {
 
-        dateLabel.textContent = "Coming Soon"
-        dateSpan.textContent = formatedDateOnly(movie.release_date) || "N/A";
-        document.querySelector('.origin-country').textContent = formatedCountry(movie.origin_country[0]) || "N/A";
+        setAllText('..date-label', "Coming Soon");
+        setAllText('.date-span', formatedDateOnly(movie.release_date) || "N/A");
+        setAllText('.origin-country', formatedCountry(movie.origin_country[0]) || "N/A");
         budgetAndRevenue.classList.add('hidden')
-        ratingSpan.classList.add('hidden')
-        document.querySelector('.upcoming').classList.remove('hidden');
+        hideAll('.budget-revenue')
+        showAll('.upcoming');
 
     }
 
     hiddenGems.forEach(item => {
         if (item.id === movie.id && item.type === 'movie') {
-            document.querySelector('.gem').classList.remove('hidden')
+            showAll('.gem');
         }
     });
 
-    document.querySelector('.language-span').textContent = formatedLanguage(movie.original_language);
-    document.querySelector('.budget-span').textContent = formatedCurrency(movie.budget) || "N/A";
-    document.querySelector('.revenue-span').textContent = formatedCurrency(movie.revenue) || "N/A";
+    setAllText('.language-span', formatedLanguage(movie.original_language));
+    setAllText('.budget-span', formatedCurrency(movie.budget));
+    setAllText('.revenue-span', formatedCurrency(movie.revenue) || "N/A");
 
     posterImage.onload = function () {
         posterImage.classList.remove('hidden');
         status.classList.remove('hidden');
-        trailerButton.classList.remove('hidden');
-        genre.classList.remove('hidden');
+        showAll('.btn-trailer');
+        showAll('.genres');
     };
 };
 
@@ -1367,7 +1383,7 @@ if (mostPopular) {
 
 
 //Modal DOM
-const trailerButton = document.querySelector('.btn-trailer');
+const trailerButton = document.querySelectorAll('.btn-trailer');
 const modal = document.querySelector('.modal');
 const modalContent = document.querySelector('.modal-content');
 const overlay = document.querySelector('.overlay');
@@ -1389,32 +1405,34 @@ const openTrailer = function (vidkey) {
 
 const trailerName = function (Itemname) {
     if (trailerButton) {
-
-        trailerButton.addEventListener('click', function () {
-
-
-            const mainTrailer = mediaState.videos.find(trail => trail.site === "YouTube" && trail.name === "Official Trailer" && trail.official === true) || mediaState.videos.find(trail => trail.site === "YouTube" && trail.official === true && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Teaser");
-            console.log(mainTrailer)
-
-            if (mainTrailer) {
-                openTrailer(mainTrailer)
-                trailerName();
-
-            } else {
-                alert("No trailer found")
-            }
+        trailerButton.forEach(el => {
+            el.addEventListener('click', function () {
 
 
+                const mainTrailer = mediaState.videos.find(trail => trail.site === "YouTube" && trail.name === "Official Trailer" && trail.official === true) || mediaState.videos.find(trail => trail.site === "YouTube" && trail.official === true && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Teaser");
+                console.log(mainTrailer)
+
+                if (mainTrailer) {
+                    openTrailer(mainTrailer)
+                    trailerName();
+
+                } else {
+                    alert("No trailer found")
+                }
 
 
-            if (isTv) {
-                document.querySelector('.trailer-name').textContent = `${Itemname.name} - ${mainTrailer.type || 'Trailer'}`
 
 
-            } else {
-                document.querySelector('.trailer-name').textContent = `${Itemname.title} - ${mainTrailer.type || 'Trailer'}`
-            }
-        });
+                if (isTv) {
+                    document.querySelector('.trailer-name').textContent = `${Itemname.name} - ${mainTrailer.type || 'Trailer'}`
+
+
+                } else {
+                    document.querySelector('.trailer-name').textContent = `${Itemname.title} - ${mainTrailer.type || 'Trailer'}`
+                }
+            });
+        })
+
     }
 
 }

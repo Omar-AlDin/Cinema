@@ -216,6 +216,12 @@ nav a:hover {
 
 }
 
+.genre-status-desktop {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
 .genres {
     gap: 8px;
     display: flex;
@@ -279,8 +285,9 @@ nav a:hover {
     cursor: pointer;
     border-radius: 30px;
     padding: 10px 10px;
-    width: 95%
-        /* margin-right: 80px; */
+    width: 95%;
+    /* margin-bottom: 100px; */
+    /* margin-right: 80px; */
 }
 
 .details-bottom {
@@ -363,7 +370,11 @@ nav a:hover {
     align-items: center
 }
 
-.media-nav h2 {
+.media-mobile {
+    display: none;
+}
+
+.media-desktop {
     margin: 0;
 }
 
@@ -1937,6 +1948,14 @@ html {
     display: none;
 }
 
+.rating-mobile {
+    display: none;
+}
+
+.mobile-metadata {
+    display: none;
+}
+
 .hidden {
     display: none;
 }
@@ -1944,6 +1963,13 @@ html {
 
 /* mobile */
 @media (max-width: 599px) {
+    .rating-mobile {
+        display: block
+    }
+
+    .mobile-metadata {
+        display: block
+    }
 
     .on-backdrop {
         left: 17px;
@@ -2249,7 +2275,7 @@ html {
         width: 100%;
         flex-direction: row;
         align-items: flex-start;
-        margin-left: -5px;
+        margin-left: -3px;
     }
 
     .poster {
@@ -2260,14 +2286,17 @@ html {
     }
 
     .title {
-        font-size: 14px;
         margin-bottom: 10px;
-        /* margin-top: -15px; */
+
+    }
+
+    .js-title {
         display: -webkit-box;
         -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
         overflow: hidden;
-
+        font-size: 18px;
+        margin: 0;
     }
 
     .status {
@@ -2315,8 +2344,15 @@ html {
         display: none;
     }
 
+    .title-desktop {
+        display: none;
+    }
+
+    .genre-status-desktop {
+        display: none;
+    }
+
     .rating-mobile {
-        margin-top: -35px;
         margin-bottom: 35px;
         margin-left: 0px;
     }
@@ -2365,7 +2401,7 @@ html {
         display: flex;
         gap: 50px;
         flex-wrap: nowrap;
-        margin-bottom: 50px;
+        margin-bottom: 30px;
         align-items: flex-start;
         overflow-x: auto;
         scroll-behavior: smooth;
@@ -2381,7 +2417,7 @@ html {
         color: #d1d5db;
         border-left: 3px solid #e50914;
         padding-left: 12px;
-        margin: -20px 0 20px 0;
+        margin: -20px 0 0px 0;
     }
 
 
@@ -2389,6 +2425,109 @@ html {
     .btn-view-more {
         margin-right: -200px;
     }
+
+    .mobile-metadata {
+        margin: 0;
+        display: flex;
+        gap: 45px;
+        margin-bottom: 40px;
+
+    }
+
+
+    .production-details-header,
+    .financials-header {
+        display: inline-flex;
+        gap: 10px;
+    }
+
+    .production-details,
+    .financials {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+
+    .mobile-metadata p {
+        margin: 0;
+        color: #a0a0a0;
+        font-size: 14px;
+    }
+
+    .mobile-metadata span {
+        color: #ffffff;
+        font-weight: 490;
+        display: block;
+        margin-top: 3px;
+        font-size: 14px;
+
+    }
+
+    .production-details-header span,
+    .financials-header span {
+        display: inline-flex;
+        gap: 10px;
+        font-weight: 600;
+    }
+
+    .media-section {
+        overflow-x: visible;
+
+    }
+
+    .media-desktop {
+        display: none;
+    }
+
+    .media-mobile {
+        display: block;
+    }
+
+    .media-nav nav {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        overflow-x: auto;
+        scrollbar-width: none;
+        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+
+    .media-mobile {
+        font-size: 20px;
+    }
+
+    .media-nav button {
+        color: white;
+        font-size: 15px;
+    }
+
+    .media-scroll {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        overflow-x: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        margin-left: -20px;
+        margin-right: -20px;
+        padding: 0 20px;
+        overscroll-behavior: contain;
+
+    }
+
+    .media-container {
+        flex-shrink: 0;
+        border-radius: 3px;
+        cursor: pointer;
+        max-width: 310px;
+        height: auto;
+        object-fit: cover;
+        aspect-ratio: 16 / 9;
+
+    }
+
 
 
     .hidden {
