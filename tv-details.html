@@ -40,36 +40,70 @@
             <aside class="left-column">
                 <img class="poster" src="" alt="">
 
-                <div class="genres hidden">
-                    <span class="genre-pill"></span>
-                    <span class="genre-pill"></span>
-                    <span class="genre-pill"></span>
-                </div>
 
-                <button class="btn-trailer hidden">▶ Watch Trailer</button>
-
-                <div class="status">
-                    <div class="date-group">
-                        <p class="date-label"></p>
-                        <span class="date-span"></span>
-                        </p>
+                <div class="beside-poster">
+                    <div class="title">
+                        <h2 class="js-title"></h2>
                     </div>
-                    <p class="revenue">Country of Origin: <span class="origin-country"></span></p>
 
-                    <p class="language">Original Language: <span class="language-span"></span></p>
+                    <a href="index.html#hidden-gems" class="gem hidden ">
+                        <i data-lucide="gem" class="gem-badge"></i>
+                        <span>Gem</span>
+                    </a>
+                    <div class="title-info">
+                        <span class="js-release-year tv-release"></span>
+                    </div>
+                    <div class="title-info">
 
-                    <p class="episode">Next Episode: <span class="next-episode"></span></p>
+                        <span class="js-tv-certification cert-badge"></span>
+                        <span class="dot-time">•</span>
+                        <span class="js-runtime"></span>
+                    </div>
 
-                    <p class="networks">Networks: <span class="networks-span"></span></p>
-                    <p class="total-episodes">Total Episodes: <span class="total-episodes-span"></span></p>
 
+                    <div class="genres hidden">
+                        <span class="genre-pill"></span>
+                        <span class="genre-pill"></span>
+                        <span class="genre-pill"></span>
+                    </div>
 
-
+                    <button class="btn-trailer hidden">▶ Watch Trailer</button>
                 </div>
+
+                <div class="genre-status-desktop">
+
+                    <div class="genres hidden">
+                        <span class="genre-pill"></span>
+                        <span class="genre-pill"></span>
+                        <span class="genre-pill"></span>
+                    </div>
+
+                    <button class="btn-trailer hidden">▶ Watch Trailer</button>
+
+                    <div class="status">
+                        <div class="date-group">
+                            <p class="date-label"></p>
+                            <span class="date-span"></span>
+                            </p>
+                        </div>
+                        <p class="revenue">Country of Origin: <span class="origin-country"></span></p>
+
+                        <p class="language">Original Language: <span class="language-span"></span></p>
+
+                        <p class="episode">Next Episode: <span class="next-episode"></span></p>
+
+                        <p class="total-season">Total Seasons: <span class="total-season-span"></span></p>
+
+                        <p class="networks">Networks: <span class="networks-span"></span></p>
+                        <p class="total-episodes">Total Episodes: <span class="total-episodes-span"></span></p>
+
+                    </div>
+
+
             </aside>
             <div class="right-column">
                 <div class="details-info">
-                    <div class="title">
+                    <div class="title-desktop">
                         <h2 class="js-title"></h2>
                         <a href="index.html#hidden-gems" class="gem hidden ">
                             <i data-lucide="gem" class="gem-badge"></i>
@@ -78,20 +112,32 @@
 
                         </a>
                     </div>
-                    <div class="title-info">
-                        <span class="rating">⭐ <strong id="rating-tv"></strong><span class="max-score">/10</span></span>
+                    <div class="title-info-desktop">
+                        <div class="title-info">
+
+                            <span class="rating">⭐ <strong class="rating-tv"></strong><span
+                                    class="max-score">/10</span></span>
+                            <span class="upcoming hidden">
+                                <i data-lucide="calendar" class="icon-badge"></i>
+                                <span>UPCOMING</span>
+                            </span>
+                            <span class="dot">•</span>
+                            <span class="js-release-year"></span>
+                            <span class="dot">•</span>
+                            <span class="js-tv-certification cert-badge"></span>
+                            <span class="dot-time">•</span>
+                            <span class="js-runtime"></span>
+                        </div>
+                    </div>
+                    <div class="rating-mobile">
                         <span class="upcoming hidden">
                             <i data-lucide="calendar" class="icon-badge"></i>
                             <span>UPCOMING</span>
-                        </span>
-                        <span class="dot">•</span>
-                        <span class="js-release-year"></span>
-                        <span class="dot">•</span>
-                        <span class="js-tv-certification"></span>
-                        <span class="dot-time">•</span>
-                        <span class="js-runtime"></span>
-                    </div>
 
+                        </span>
+                        <span class="rating">⭐ <strong class="rating-tv"></strong><span
+                                class="max-score">/10</span></span>
+                    </div>
                     <p class="tagline"></p>
                     <p class="overview">
 
@@ -111,7 +157,7 @@
 
 
                     </div>
-                    <div class="season-episodes">
+                    <div class="season-episodes collapse">
                     </div>
                 </div>
                 <h2>Cast</h2>
@@ -124,12 +170,38 @@
                     <button class="btn-view-more">View More</button>
 
                 </div>
+                <section class="mobile-metadata">
+                    <div class="production-details">
+                        <div class="production-details-header">
+                            <i data-lucide="clapperboard" class="icon-badge"></i>
+                            <span>Production Details</span>
+                        </div>
+                        <div class="date-group">
+                            <p class="date-label"></p>
+                            <span class="date-span"></span>
+                            </p>
+                        </div>
+                        <p class="country">Country of Origin: <span class="origin-country"></span></p>
 
+                        <p class="language">Original Language: <span class="language-span"></span></p>
+                    </div>
+                    <div class="tv-metrics">
+                        <div class="tv-metrics-header">
+                            <i data-lucide="tv" class="icon-badge"></i>
+                            <span>TV Metrics</span>
+                        </div>
+                        <p class="networks">Networks: <span class="networks-span"></span></p>
+                        <p class="total-season">Total Seasons: <span class="total-season-span"></span></p>
+
+                        <p class="total-episodes">Total Episodes: <span class="total-episodes-span"></span></p>
+                    </div>
+                </section>
                 <section class="media-section">
                     <div class="media-nav">
+                        <h2 class="media-mobile">Media</h2>
 
                         <nav>
-                            <h2>Media</h2>
+                            <h2 class="media-desktop">Media</h2>
                             <button class="btn-popular" data-tab="popular">Most Popular</button>
                             <button class="btn-videos" data-tab="videos">Videos</button>
                             <button class="btn-backdrops" data-tab="backdrops">Backdrops</button>

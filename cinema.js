@@ -625,7 +625,7 @@ const renderDetails = function (movie) {
 
 
 const creatorTv = document.querySelector('#creator-span');
-const ratingTv = document.querySelector('#rating-tv');
+// const ratingTv = document.querySelector('.rating-tv');
 //-------Rrender TV Shows------------
 const isTv = window.location.pathname.includes('tv-details.html');
 // const dota = document.querySelector('.dot-time');
@@ -649,7 +649,7 @@ const renderDetailsTv = function (tv) {
     }
     const creator = tv.created_by.map(create => create.name).join(', ');
     creatorTv.textContent = creator || "N/A";
-    ratingTv.textContent = tv.vote_average.toFixed(1);
+    setAllText('.rating-tv', tv.vote_average.toFixed(1));
 
 
     //Genres
@@ -671,7 +671,7 @@ const renderDetailsTv = function (tv) {
     //release year
     function releaseYearRage(tv) {
         if (!tv.first_air_date) {
-            releaseYear.textContent = "N/A";
+            setAllText('.js-release-year', "N/A");
             return;
         }
 
@@ -712,8 +712,11 @@ const renderDetailsTv = function (tv) {
     if (runTimes) {
         setAllText('.js-runtime', `${runTimes}m`);
     } else {
-        setAllDisplay('.js-runtime', 'none');
-        setAllDisplay('.dot-time', 'none');
+        // setAllDisplay('.js-runtime', 'none');
+
+        document.querySelectorAll('.dot-time').forEach(el => {
+            el.style.display = 'none'
+        });
     }
 
 
@@ -722,19 +725,21 @@ const renderDetailsTv = function (tv) {
 
 
     if (releaseDate <= today) {
-        dateLabel.textContent = "Release Date:"
-        dateSpan.textContent = formatedDateOnly(tv.first_air_date) || "N/A";
-        document.querySelector('.origin-country').textContent = formatedCountry(tv.origin_country[0]) || "N/A";
+        setAllText('.date-label', "Release Date:")
+        setAllText('.date-span', formatedDateOnly(tv.first_air_date) || "N/A");
+        setAllText('.origin-country', formatedCountry(tv.origin_country[0]) || "N/A");
         status.classList.remove('hidden')
 
+
     } else {
-        dateLabel.textContent = "Coming Soon"
-        dateSpan.textContent = formatedDateOnly(tv.first_air_date) || "N/A";
-        document.querySelector('.origin-country').textContent = formatedCountry(tv.origin_country[0]) || "N/A";
+        setAllText('.date-label', "Coming Soon")
+        setAllText('.date-span', formatedDateOnly(tv.first_air_date) || "N/A");
+        setAllText('.origin-country', formatedCountry(tv.origin_country[0]) || "N/A");
         ratingSpan.classList.add('hidden');
         status.classList.remove('hidden');
-        document.querySelector('.episode').classList.add('hidden')
-        document.querySelector('.upcoming').classList.remove('hidden');
+        hideAll('.episode')
+        showAll('.upcoming');
+        hideAll('.rating')
 
     }
 
@@ -773,7 +778,7 @@ const renderDetailsTv = function (tv) {
 
     };
 
-    document.querySelector('.language-span').textContent = formatedLanguage(tv.original_language);
+    setAllText('.language-span', formatedLanguage(tv.original_language));
 
     setAllText('.js-title', tv.original_name);
 
@@ -785,21 +790,20 @@ const renderDetailsTv = function (tv) {
         return curr.season_number > 0 ? acc + curr.episode_count : acc;
     }, 0) || 0;
 
-    document.querySelector('.total-episodes-span').textContent = totalEpisodes
+    setAllText('.total-episodes-span', totalEpisodes)
 
 
     // networks
     const netSpan = document.querySelector('.networks');
     const network = tv.networks?.map(net => net.name).join(', ');
     if (network) {
-        document.querySelector('.networks-span').textContent = network;
+        setAllText('.networks-span', network);
     } else {
         netSpan.style.display = 'none';
     };
 
 
-
-
+    setAllText('.total-season-span', tv.number_of_seasons);
 
 
 }
@@ -818,7 +822,7 @@ const renderSeasonBtn = function (tv) {
         if (sea.season_number === 0) return
         const seasonBtn = document.createElement('button');
         seasonBtn.classList.add('season-btn');
-        seasonBtn.textContent = `S${sea.season_number}`
+        seasonBtn.textContent = `S${sea.season_number}`;
         if (firstRealSeason && sea.season_number === firstRealSeason.season_number) {
             seasonBtn.classList.add('active');
         }
@@ -826,12 +830,21 @@ const renderSeasonBtn = function (tv) {
 
 
         seasonBtn.addEventListener('click', () => {
-            document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
-            seasonBtn.classList.add('active');
+            const isActive = seasonBtn.classList.contains('active');
+            const episodesContainer = document.querySelector('.collapse');
+            if (isActive) {
 
-            loadSeason(currentShowId, sea.season_number)
+                episodesContainer.classList.toggle('hidden');
 
-        })
+            } else {
+                document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+                seasonBtn.classList.add('active');
+                episodesContainer.classList.remove('hidden');
+
+                loadSeason(currentShowId, sea.season_number);
+            }
+
+        });
         seasonScroller.append(seasonBtn);
 
     });
@@ -860,14 +873,13 @@ const loadSeason = async function (tvId = 113962, season = 1) {
     }
 }
 
-
 const renderEpisode = function (seasonData) {
     seasonEpi.innerHTML = '';
     const episodes = seasonData.episodes || [];
-
     episodes.forEach(ep => {
         const image = ep.still_path ? imageUrl(ep.still_path, 'w500') : 'placeholder.jpg';
         const rating = ep.vote_average ? ep.vote_average.toFixed(1) : 'N/A';
+        const runtimeText = ep.runtime ? `<span class="dotta">•</span> ${ep.runtime}m` : '';
 
         seasonEpi.insertAdjacentHTML('beforeend', `
         <div class = "episode-card">
@@ -876,15 +888,18 @@ const renderEpisode = function (seasonData) {
 <div class = "episode-header">
 <span class = "episode-number">${ep.episode_number}</span>
 <span class = "episode-rating"> ⭐ ${rating}</span>
-<span class = "episode-name"> ${ep.name}</span>
+<span class = "episode-name"> ${ep.name} </span>
 </div>
-<p class = "episode-date"> ${nextEpisode(ep.air_date)} </p>
+<p class = "episode-date"> ${nextEpisode(ep.air_date)} ${runtimeText}</p>
 <p class = "episode-overview"> ${ep.overview || 'No overview available'}</p>
+
 </div>
         </div>
         `
         );
+
     });
+
 }
 
 //Fomrated Date Function
@@ -1017,12 +1032,13 @@ const spans = function (movie) {
 
     } else {
 
-        setAllText('..date-label', "Coming Soon");
+        setAllText('.date-label', "Coming Soon");
         setAllText('.date-span', formatedDateOnly(movie.release_date) || "N/A");
         setAllText('.origin-country', formatedCountry(movie.origin_country[0]) || "N/A");
-        budgetAndRevenue.classList.add('hidden')
+        budgetAndRevenue.classList.add('hidden');
         hideAll('.budget-revenue')
         showAll('.upcoming');
+        hideAll('.rating');
 
     }
 
