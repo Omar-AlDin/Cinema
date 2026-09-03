@@ -56,7 +56,7 @@ nav a.active-top {
 
 nav a:hover {
 
-    color: rgb(241, 86, 86);
+    color: rgb(241, 51, 51);
 }
 
 
@@ -198,6 +198,7 @@ nav a:hover {
 .actor-name {
     text-align: center;
     margin-bottom: 0;
+    /* padding-left: 20px; */
 
 }
 
@@ -286,8 +287,11 @@ nav a:hover {
     border-radius: 30px;
     padding: 10px 10px;
     width: 95%;
-    /* margin-bottom: 100px; */
-    /* margin-right: 80px; */
+    display: flex;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
 }
 
 .details-bottom {
@@ -405,7 +409,11 @@ nav a:hover {
     align-items: center;
 }
 
-
+.cast-images-names {
+    align-items: center;
+    display: grid;
+    margin: 0;
+}
 
 .btn-view-more {
     /* width: 100px;
@@ -1265,15 +1273,11 @@ html {
 }
 
 .main-homepage {
-    max-width: 1600px;
     max-width: var(--content-max);
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    /* padding-left: var(--content-pad);
-    padding-right: var(--content-pad); */
     margin-top: 1.5rem;
-    /* gap: 100px; */
 
 }
 
@@ -1443,6 +1447,7 @@ html {
     outline-offset: -3px;
     z-index: 10;
     z-index: 5;
+    user-select: none;
 }
 
 .popular-now img:hover,
@@ -1515,8 +1520,7 @@ html {
     color: #505050;
 }
 
-.title-info-back .cert-badge,
-.title-info .cert-badge {
+.cert-badge {
     border: 1px solid rgba(255, 255, 255, 0.4);
     padding: 1px 5px;
     border-radius: 3px;
@@ -1978,11 +1982,68 @@ html {
     display: none;
 }
 
+.rating-tablet {
+    display: none;
+}
 
+.overview-tablet {
+    display: none;
+}
+
+.trailer-tablet {
+    display: none;
+}
 
 .hidden {
     display: none;
 }
+
+.btn-icon {
+    width: 15px;
+    height: 20px;
+    margin: 0;
+    margin-right: 5px;
+    display: inline-flex;
+}
+
+.star-icon {
+    display: inline-flex;
+    align-items: center;
+    width: 10px;
+    height: 18px;
+    fill: #f5c518;
+    /* Yellow fill */
+    stroke: #f5c518;
+    /* Yellow border matching the fill */
+    flex-shrink: 0;
+}
+
+.rating-inline {
+    display: flex;
+    gap: 5px;
+}
+
+.star-inline-details {
+    display: inline-flex;
+    margin-right: -7px;
+    align-items: center;
+}
+
+.star-icon-details {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    stroke: #f5c518;
+    fill: #f5c518;
+    flex-shrink: 0;
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+.tablet-metadata {
+    display: none;
+}
+
 
 
 /* mobile */
@@ -1991,9 +2052,11 @@ html {
         display: block
     }
 
-    .mobile-metadata {
-        display: block
+
+    .overview-tablet {
+        display: none;
     }
+
 
     .on-backdrop {
         left: 17px;
@@ -2461,7 +2524,9 @@ html {
     .mobile-metadata {
         margin: 0;
         display: flex;
-        gap: 45px;
+        justify-content: space-between;
+        gap: min(8vw, 60px);
+        width: 100%;
         margin-bottom: 45px;
 
     }
@@ -2472,6 +2537,10 @@ html {
     .tv-metrics-header {
         display: inline-flex;
         gap: 10px;
+        align-items: center;
+
+
+
     }
 
     .production-details,
@@ -2480,6 +2549,9 @@ html {
         display: flex;
         flex-direction: column;
         gap: 20px;
+        flex: 1;
+        min-width: 0;
+
     }
 
 
@@ -2499,11 +2571,13 @@ html {
     }
 
     .production-details-header span,
-    .financials-header span {
+    .financials-header span,
+    .tv-metrics-header span {
         display: inline-flex;
         gap: 10px;
         font-weight: 600;
     }
+
 
     .media-section {
         overflow-x: visible;
@@ -2597,7 +2671,6 @@ html {
         aspect-ratio: 16 / 9;
 
         width: 100%;
-        /* height: 112px; */
         object-fit: cover;
         border-radius: 6px;
         flex-shrink: 0;
@@ -2657,10 +2730,122 @@ html {
 
     }
 
+    .rating-tablet {
+        display: none;
+    }
+
+    .trailer-tablet {
+        display: none;
+    }
+
+    .title-tablet {
+        display: none;
+    }
+
+    .tablet-metadata {
+        display: none;
+    }
+
+
+    .see-all:hover,
+    .learn-more:hover,
+    .trailer-btn:hover,
+    .btn-details:hover,
+    .genre-card:hover,
+    .movies-grid img:hover,
+    .tv-grid img:hover,
+    .popular-now img:hover,
+    .highly-rated-main img:hover,
+    .hidden-gem-main img:hover,
+    .new-main img:hover,
+    .upcoming-main img:hover,
+    #tv-load-btn:hover,
+    #load-more-btn:hover,
+    #search-load-more-btn:hover {
+        /* color: inherit !important; */
+        transform: none !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        outline: none !important;
+        border-color: transparent !important;
+    }
+
+    nav a:hover {
+        color: inherit !important;
+
+    }
+
+    .modal-content {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 1200px;
+        background-color: #14181c;
+        border-radius: 12px;
+        padding: 0;
+
+
+    }
+
+    .modal-header {
+        padding: 10px 5px;
+        margin-bottom: 3px;
+        align-items: center;
+    }
+
+    .overlay {
+        background: rgba(0, 0, 0, 0.9);
+
+
+    }
+
+    .trailer-frame {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        border-radius: 15px;
+        display: block;
+        border: none;
+        overflow: hidden;
+    }
+
+
 }
 
 /*tablet */
-@media screen and (min-width: 700px) and (max-width: 900px) {
+@media screen and (min-width: 600px) and (max-width: 899px) {
+    .modal-content {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 1200px;
+        background-color: #14181c;
+        border-radius: 12px;
+        padding: 0;
+
+
+    }
+
+    .modal-header {
+        padding: 10px 10px;
+        margin-bottom: 3px;
+        align-items: center;
+    }
+
+    .overlay {
+        background: rgba(0, 0, 0, 0.9);
+
+
+    }
+
+    .trailer-frame {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        border-radius: 15px;
+        display: block;
+        border: none;
+        overflow: hidden;
+    }
+
     .rating-mobile {
         display: block
     }
@@ -2670,7 +2855,7 @@ html {
     }
 
     .on-backdrop {
-        left: 40px;
+        left: 30px;
         right: 24px;
     }
 
@@ -2697,7 +2882,7 @@ html {
     .tv-grid,
     .search-results {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .movies-grid img,
@@ -2876,7 +3061,7 @@ html {
     .home-backdrop {
         position: relative;
         width: 100%;
-        height: 400px;
+        height: 600px;
         overflow: hidden;
 
     }
@@ -2887,17 +3072,18 @@ html {
 
     .hero-carousel {
         position: relative;
-        height: 400px;
+        height: 600px;
         overflow: hidden;
     }
 
 
     .home-hero-overview {
-        font-size: 12px;
+        font-size: 13px;
         color: #d1d5db;
-        margin-bottom: 12px;
+        margin-bottom: -4px;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
         height: 2.8em;
+        margin-top: 30px;
     }
 
     .home-hero-info {
@@ -2913,8 +3099,8 @@ html {
         display: block;
         object-fit: contain;
         object-position: left bottom;
-        width: 180px;
-        height: 50px;
+        width: 600px;
+        height: 200px;
         margin: 0;
         margin-bottom: -10px;
 
@@ -2922,17 +3108,13 @@ html {
 
     .title-info-back {
         gap: 5px;
-        font-size: 10.2px;
-        margin-bottom: 12px;
+        font-size: 12.2px;
+        margin-bottom: 13px;
     }
 
     .trailer-btn,
     .btn-details {
-        font-size: 0.60rem;
-    }
-
-    .trailer-btn {
-        font-size: 0.55rem;
+        font-size: 0.85rem;
     }
 
     .upcoming-main {
@@ -2985,7 +3167,7 @@ html {
 
     .poster {
         position: static;
-        width: 160px;
+        width: 200px;
         flex-shrink: 0;
 
     }
@@ -2997,7 +3179,7 @@ html {
 
     .js-title {
         display: -webkit-box;
-        -webkit-line-clamp: 4;
+        -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
         overflow: hidden;
         font-size: 18px;
@@ -3029,7 +3211,7 @@ html {
     }
 
     .backdrop-tv {
-        height: 300px;
+        height: 320px;
 
     }
 
@@ -3060,28 +3242,43 @@ html {
         display: none;
     }
 
+    .title-tablet {
+        font-size: 20px;
+    }
+
     .genre-status-desktop {
         display: none;
     }
 
-    .rating-mobile {
-        margin-bottom: 35px;
-        margin-left: 0px;
+
+    .rating-data {
+        display: flex;
     }
 
-    .rating-mobile .rating {
+    .rating-tablet {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #a0a0a0;
+        font-size: 14px;
+        margin-bottom: 12px;
+        margin-top: 3px;
+    }
+
+    .rating-tablet .rating {
         color: #fff;
 
     }
 
-    .rating-mobile .rating strong {
+    .rating-tablet .rating strong {
         font-size: 17px;
     }
 
-    .rating-mobile .max-score {
+    .rating-tablet .max-score {
         color: #707070;
         font-size: 14px;
     }
+
 
     .upcoming {
         display: inline-flex;
@@ -3111,15 +3308,26 @@ html {
         padding-left: 20px;
         padding-right: 20px;
         display: flex;
-        gap: 50px;
+        gap: 90px;
         flex-wrap: nowrap;
-        margin-bottom: 20px;
+        margin-bottom: 30px;
         align-items: flex-start;
         overflow-x: auto;
         scroll-behavior: smooth;
         scrollbar-width: thin;
         scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 
+
+    }
+
+    .cast-member img {
+        border-radius: 600px;
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        display: block;
+        margin: 0 auto;
+        cursor: pointer;
 
     }
 
@@ -3139,6 +3347,7 @@ html {
     }
 
     .mobile-metadata {
+        max-width: 500px;
         margin: 0;
         display: flex;
         gap: 45px;
@@ -3152,6 +3361,7 @@ html {
     .tv-metrics-header {
         display: inline-flex;
         gap: 10px;
+        align-items: center;
     }
 
     .production-details,
@@ -3208,12 +3418,12 @@ html {
     }
 
     .media-mobile {
-        font-size: 20px;
+        font-size: 25px;
     }
 
     .media-nav button {
         color: white;
-        font-size: 15px;
+        font-size: 20px;
     }
 
     .media-scroll {
@@ -3235,17 +3445,14 @@ html {
         flex-shrink: 0;
         border-radius: 3px;
         cursor: pointer;
-        max-width: 310px;
+        max-width: 450px;
         height: auto;
         object-fit: cover;
-        aspect-ratio: 16 / 9;
+        aspect-ratio: 16 / 10;
 
     }
 
 
-    .gem {
-        margin-bottom: 13px;
-    }
 
     .gem:hover .tooltip {
         visibility: hidden;
@@ -3275,12 +3482,14 @@ html {
 
     .episode-still {
         aspect-ratio: 16 / 9;
-
+        min-height: 250px;
         width: 100%;
         /* height: 112px; */
         object-fit: cover;
         border-radius: 6px;
         flex-shrink: 0;
+        object-position: center 20%;
+
     }
 
     .season-scroller {
@@ -3337,6 +3546,129 @@ html {
 
     }
 
+
+    .rating-mobile {
+        display: none;
+    }
+
+    .title-info-mobile {
+        display: none;
+    }
+
+    .overview-tablet {
+        display: block;
+        margin-top: 35px;
+    }
+
+    .trailer-mobile {
+        display: none;
+    }
+
+    .trailer-tablet {
+        display: block;
+    }
+
+    .poster-main {
+        display: none;
+    }
+
+    .tagline-overview {
+        display: none;
+    }
+
+    .title-mobile {
+        display: none;
+    }
+
+    .title-tablet .title {
+        display: inline-flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .tablet-metadata {
+        display: block;
+        margin-bottom: 55px;
+
+
+    }
+
+    .mobile-metadata {
+        display: none;
+
+    }
+
+    .information-details-header {
+        margin-bottom: 20px;
+        display: inline-flex;
+        gap: 10px;
+    }
+
+    .information-details-header span {
+        display: inline-flex;
+        font-weight: 600;
+        font-size: 20px;
+    }
+
+
+    .tablet-metadata-main {
+        max-width: 100%;
+        margin: 0;
+        display: grid;
+        gap: 45px;
+        margin-bottom: 45px;
+        gap: 20px 32px;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+
+
+    }
+
+    .tablet-metadata-main p {
+        margin: 0;
+        color: #a0a0a0;
+        font-size: 14px;
+    }
+
+    .tablet-metadata-main span {
+        color: #ffffff;
+        font-weight: 490;
+        display: block;
+        margin-top: 3px;
+        font-size: 14px;
+
+    }
+
+    .beside-poster .genre-pill {
+        font-size: 11px;
+    }
+
+    .see-all:hover,
+    .learn-more:hover,
+    .trailer-btn:hover,
+    .btn-details:hover,
+    .genre-card:hover,
+    .movies-grid img:hover,
+    .tv-grid img:hover,
+    .popular-now img:hover,
+    .highly-rated-main img:hover,
+    .hidden-gem-main img:hover,
+    .new-main img:hover,
+    .upcoming-main img:hover,
+    #tv-load-btn:hover,
+    #load-more-btn:hover,
+    #search-load-more-btn:hover {
+        /* color: inherit !important; */
+        transform: none !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        outline: none !important;
+        border-color: transparent !important;
+    }
+
+    nav a:hover {
+        color: inherit !important;
+
+    }
 
 }
 

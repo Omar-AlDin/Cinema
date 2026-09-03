@@ -34,36 +34,82 @@
         <section class="details-bottom">
 
             <aside class="left-column">
-                <img class="poster hidden" src="" alt="">
+                <div class="poster-main">
+                    <img class="poster hidden" src="" alt="">
+                </div>
 
+                <div class="trailer-tablet">
+                    <img class="poster hidden" src="" alt="">
+
+                    <button class="btn-trailer hidden"><i data-lucide="play" class="btn-icon"></i> Watch
+                        Trailer</button>
+
+
+                </div>
 
                 <div class="beside-poster">
-                    <div class="title">
-                        <h2 class="js-title"></h2>
-
+                    <div class="title-tablet">
+                        <div class="title">
+                            <h2 class="js-title"></h2>
+                            <a href="index.html#hidden-gems" class="gem hidden ">
+                                <i data-lucide="gem" class="gem-badge"></i>
+                                <span>Gem</span>
+                            </a>
+                        </div>
                     </div>
-                    <a href="index.html#hidden-gems" class="gem hidden ">
-                        <i data-lucide="gem" class="gem-badge"></i>
-                        <span>Gem</span>
-                    </a>
-                    <div class="title-info">
+                    <div class="title-mobile">
+                        <div class="title">
+                            <h2 class="js-title"></h2>
+
+                        </div>
+                        <a href="index.html#hidden-gems" class="gem hidden ">
+                            <i data-lucide="gem" class="gem-badge"></i>
+                            <span>Gem</span>
+                        </a>
+                    </div>
+                    <div class="title-info-mobile">
+
+                        <div class="title-info">
+
+                            <span class="js-release-year"></span>
+                            <span class="dot">•</span>
+                            <span class="js-movie-certification cert-badge"></span>
+                            <span class="dot">•</span>
+                            <span class="js-runtime"></span>
+
+                        </div>
+                    </div>
+                    <div class="rating-tablet">
+                        <span class="upcoming hidden">
+                            <i data-lucide="calendar" class="icon-badge"></i>
+                            <span>UPCOMING</span>
+
+                        </span>
+                        <!-- <div class="rating-data"> -->
+                        <span class="star-inline-details"><i data-lucide="star" class="star-icon-details"></i></span>
+                        <span class="rating"><strong class="js-movie-rating"></strong><span
+                                class="max-score">/10</span></span>
+                        <span class="dot">•</span>
 
                         <span class="js-release-year"></span>
                         <span class="dot">•</span>
                         <span class="js-movie-certification cert-badge"></span>
                         <span class="dot">•</span>
                         <span class="js-runtime"></span>
-
+                        <!-- </div> -->
                     </div>
-
                     <div class="genres hidden">
                         <span class="genre-pill"></span>
                         <span class="genre-pill"></span>
                         <span class="genre-pill"></span>
                     </div>
 
-
-                    <button class="btn-trailer hidden">▶ Watch Trailer</button>
+                    <div class="overview-tablet">
+                        <p class="tagline"></p>
+                        <p class="overview"></p>
+                    </div>
+                    <button class="btn-trailer trailer-mobile hidden"><i data-lucide="play" class="btn-icon"></i> Watch
+                        Trailer</button>
 
 
 
@@ -77,7 +123,8 @@
                         <span class="genre-pill"></span>
                     </div>
 
-                    <button class="btn-trailer hidden">▶ Watch Trailer</button>
+                    <button class="btn-trailer hidden"><i data-lucide="play" class="btn-icon"></i> Watch
+                        Trailer</button>
                     <div class="status">
                         <div class="date-group">
                             <p class="date-label"></p>
@@ -112,7 +159,10 @@
                     <div class="title-info-desktop">
 
                         <div class="title-info">
-                            <span class="rating">⭐<strong class="js-movie-rating"></strong><span
+                            <span class="star-inline-details"><i data-lucide="star"
+                                    class="star-icon-details"></i></span>
+
+                            <span class="rating"><strong class="js-movie-rating"></strong><span
                                     class="max-score">/10</span></span>
 
                             <span class="upcoming hidden">
@@ -137,12 +187,16 @@
                         <span class="rating">⭐ <strong class="js-movie-rating"></strong><span
                                 class="max-score">/10</span></span>
                     </div>
-                    <p class="tagline"></p>
-                    <p class="overview">
-
-                    </p>
+                    <div class="tagline-overview">
+                        <p class="tagline"></p>
+                        <p class="overview"></p>
+                    </div>
 
                 </div>
+                <!-- <div class="trailer-tablet">
+                    <button class="btn-trailer hidden">▶ Watch Trailer</button>
+
+                </div> -->
                 <div class="sub-crew">
                     <p class="director">Directors: <span id="director-span"></span></p>
 
@@ -170,6 +224,7 @@
                             <span class="date-span"></span>
                         </div>
                         <p class="country">Country: <span class="origin-country"></span></p>
+
                         <p class="language">Original Language: <span class="language-span"></span></p>
                     </div>
                     <div class="financials">
@@ -182,6 +237,35 @@
                         <p class="revenue">Revenue: <span class="revenue-span"></span></p>
                     </div>
                 </section>
+
+
+                <section class="tablet-metadata">
+
+                    <div class="information-details-header">
+                        <i data-lucide="clapperboard" class="icon-badge"></i>
+                        <span>Information</span>
+                    </div>
+                    <div class="tablet-metadata-main">
+                        <div class="date-group">
+                            <p class="date-label"></p>
+                            <span class="date-span"></span>
+                        </div>
+                        <div>
+                            <p class="country">Country: <span class="origin-country"></span></p>
+                        </div>
+                        <div>
+                            <p class="language">Original Language: <span class="language-span"></span></p>
+                        </div>
+                        <div>
+                            <p class="budget">Budget: <span class="budget-span"></span></p>
+                        </div>
+                        <div>
+                            <p class="revenue">Revenue: <span class="revenue-span"></span></p>
+                        </div>
+                    </div>
+                </section>
+
+
                 <section class="media-section">
                     <div class="media-nav">
                         <h2 class="media-mobile">Media</h2>
@@ -215,6 +299,7 @@
                 </div>
                 <iframe class="trailer-frame" src="" allowFullscreen></iframe>
             </div>
+
         </div>
     </div>
     <script src="cinema.js"></script>

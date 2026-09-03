@@ -516,7 +516,7 @@ const posterImage = document.querySelector('.poster');
 const actorsContainer = document.querySelector('.cast-list');
 const status = document.querySelector('.status');
 // const releaseYear = document.querySelector('#release-year')
-if (posterImage) posterImage.classList.add('hidden');
+if (posterImage) hideAll('.poster');
 // const cerEl = document.querySelector('#movie-certification')
 // const runTime = document.querySelector('#runtime')
 const tagline = document.querySelector('.tagline')
@@ -544,9 +544,9 @@ const renderDetails = function (movie) {
 
     setAllText('.js-runtime', (movie.runtime / 60).toFixed(0) + "h" + ' ' + (movie.runtime % 60) + "m");
 
-    if (tagline) tagline.textContent = movie.tagline || "";
+    if (tagline) setAllText('.tagline', movie.tagline || "");
 
-    if (overview) overview.textContent = movie.overview || "";
+    if (overview) setAllText('.overview', movie.overview || "");
 
 
 
@@ -588,9 +588,11 @@ const renderDetails = function (movie) {
             const profileImage = imageUrl(act.profile_path, 'w185');
 
             attore.innerHTML =
-                `<img src=${profileImage} alt="${act.name}" class = "cast-image">
+                `<div class="cast-images-names">
+                <img src=${profileImage} alt="${act.name}" class = "cast-image">
         <h4 class="actor-name">${act.name}</h4>
-        <p class="character-name">${act.character}</p>`;
+        <p class="character-name">${act.character}</p>
+        </div>`;
 
             actorsContainer.append(attore)
         });
@@ -636,8 +638,8 @@ console.log(isTv)
 const renderDetailsTv = function (tv) {
     if (!tv || tv.success == false) return;
     console.log("Hello")
-    posterImage.src = imageUrl(tv.poster_path);
-    posterImage.classList.remove('hidden')
+    document.querySelectorAll('.poster').forEach(el => el.src = imageUrl(tv.poster_path));
+    showAll('.poster')
 
     const tvDate = tv.first_air_date;
     const releaseDate = new Date(tvDate);
@@ -740,6 +742,7 @@ const renderDetailsTv = function (tv) {
         hideAll('.episode')
         showAll('.upcoming');
         hideAll('.rating')
+        hideAll('.star-icon-details')
 
     }
 
@@ -750,8 +753,8 @@ const renderDetailsTv = function (tv) {
     });
 
 
-    tagline.textContent = tv.tagline;
-    overview.textContent = tv.overview;
+    setAllText('.tagline', tv.tagline);
+    setAllText('.overview', tv.overview);
 
     if (actorsContainer) {
         const actors = tv.credits?.cast?.slice(0, 9) || [];
@@ -1018,8 +1021,8 @@ const ratingSpan = document.querySelector('.rating');
 
 
 const spans = function (movie) {
-    posterImage.src = imageUrl(movie.poster_path);
-    posterImage.alt = `${movie.original_title} Poster`;
+    document.querySelectorAll('.poster').forEach(el => el.src = imageUrl(movie.poster_path));
+    document.querySelectorAll('.poster').forEach(el => el.alt = `${movie.original_title} Poster`);
 
     const movieDate = movie.release_date;
     const releaseDate = new Date(movieDate);
@@ -1039,6 +1042,7 @@ const spans = function (movie) {
         hideAll('.budget-revenue')
         showAll('.upcoming');
         hideAll('.rating');
+        hideAll('.star-icon-details')
 
     }
 
@@ -1053,7 +1057,7 @@ const spans = function (movie) {
     setAllText('.revenue-span', formatedCurrency(movie.revenue) || "N/A");
 
     posterImage.onload = function () {
-        posterImage.classList.remove('hidden');
+        showAll('.poster');
         status.classList.remove('hidden');
         showAll('.btn-trailer');
         showAll('.genres');
@@ -1440,11 +1444,10 @@ const trailerName = function (Itemname) {
 
 
                 if (isTv) {
-                    document.querySelector('.trailer-name').textContent = `${Itemname.name} - ${mainTrailer.type || 'Trailer'}`
-
+                    setAllText('.trailer-name', `${Itemname.name} - ${mainTrailer.type || 'Trailer'}`)
 
                 } else {
-                    document.querySelector('.trailer-name').textContent = `${Itemname.title} - ${mainTrailer.type || 'Trailer'}`
+                    setAllText('.trailer-name', `${Itemname.title} - ${mainTrailer.type || 'Trailer'}`)
                 }
             });
         })
@@ -1548,13 +1551,13 @@ const renderHero = async function (item) {
         ...genreNames,
         year,
         certificate ? `<span class="cert-badge">${certificate}</span>` : null,
-        `⭐ ${data.vote_average.toFixed(1)}`
+        `<span class="rating-inline"><i data-lucide="star" class="star-icon"></i> ${data.vote_average.toFixed(1)}<span>`
     ].filter(Boolean);
 
     heroMetaData.innerHTML = parts
         .map(p => `<span>${p}</span>`)
         .join('<span class="dot">•</span>');
-
+    lucide.createIcons();
     if (heroDetails) {
         const detailsPage = isTv ? 'tv-details.html' : 'movie-details.html';
         heroDetails.href = `${detailsPage}?id=${data.id}`
