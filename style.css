@@ -158,6 +158,7 @@ nav a:hover {
     margin: 0 auto;
     cursor: pointer;
 
+
 }
 
 .character-name {
@@ -409,11 +410,7 @@ nav a:hover {
     align-items: center;
 }
 
-.cast-images-names {
-    align-items: center;
-    display: grid;
-    margin: 0;
-}
+
 
 .btn-view-more {
     /* width: 100px;
@@ -749,6 +746,13 @@ html {
     flex-shrink: 0;
 }
 
+.episode-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+}
+
 .episode-header {
     display: flex;
     gap: 10px;
@@ -762,6 +766,10 @@ html {
 
 .episode-rating {
     color: #f5c518;
+}
+
+.episode-date-main {
+    margin-top: -10px;
 }
 
 .season-btn {
@@ -1237,6 +1245,7 @@ html {
             rgba(0, 0, 0, 0) 40%,
             rgba(0, 0, 0, 0.5) 75%,
             #14181c 100%);
+    pointer-events: none;
 }
 
 .home-hero-info {
@@ -1252,6 +1261,8 @@ html {
     color: #d1d5db;
     margin-bottom: 20px;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+
 }
 
 .home-section-title {
@@ -1465,6 +1476,7 @@ html {
     position: relative;
     height: 750px;
     overflow: hidden;
+    touch-action: pan-y;
 }
 
 .hero-slide {
@@ -1505,6 +1517,7 @@ html {
     font-size: 13.2px;
     margin-bottom: 20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
 
 }
 
@@ -1538,6 +1551,7 @@ html {
     filter: drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.5));
     user-select: none;
     pointer-events: none;
+
 }
 
 .home-hero-info {
@@ -1924,6 +1938,7 @@ html {
     display: inline-flex;
     gap: 15px;
     align-items: center;
+    margin-bottom: -3px;
 
 }
 
@@ -1994,9 +2009,6 @@ html {
     display: none;
 }
 
-.hidden {
-    display: none;
-}
 
 .btn-icon {
     width: 15px;
@@ -2021,6 +2033,7 @@ html {
 .rating-inline {
     display: flex;
     gap: 5px;
+    align-items: center;
 }
 
 .star-inline-details {
@@ -2044,6 +2057,18 @@ html {
     display: none;
 }
 
+.star-episode {
+    margin-right: 2px;
+}
+
+.star-episode {
+    height: 15px;
+
+}
+
+.hidden {
+    display: none;
+}
 
 
 /* mobile */
@@ -2450,6 +2475,16 @@ html {
     .rating-mobile {
         margin-bottom: 35px;
         margin-left: 0px;
+        display: inline-flex;
+    }
+
+    .star-inline-details {
+        margin-right: 1px;
+    }
+
+    .star-episode {
+        margin-right: -5px;
+        ;
     }
 
     .rating-mobile .rating {
@@ -2638,16 +2673,14 @@ html {
 
 
     .gem {
-        margin-bottom: 13px;
+        margin-bottom: 6px;
     }
 
     .gem:hover .tooltip {
         visibility: hidden;
     }
 
-    .hidden {
-        display: none;
-    }
+
 
     .episode-card {
         display: flex;
@@ -2808,11 +2841,22 @@ html {
         overflow: hidden;
     }
 
+    .btn-view-more-mobile {
+        display: none;
+    }
+
+    .hidden {
+        display: none;
+    }
 
 }
 
 /*tablet */
 @media screen and (min-width: 600px) and (max-width: 899px) {
+    .btn-view-more-mobile {
+        display: none;
+    }
+
     .modal-content {
         position: relative;
         z-index: 2;
@@ -2906,47 +2950,46 @@ html {
     .card-img {
         position: absolute;
         left: -3px;
-        top: -5px;
+        top: -8px;
         width: 60%;
-        height: 115%;
-        clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
-        transform: rotate(-16deg);
+        height: 110%;
+        clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
+        transform: rotate(-14deg);
 
     }
 
     .genre-title {
-        font-size: 0.6rem;
+        font-size: clamp(1.2rem, 4vw, 1.4rem);
     }
 
     .genre-card.documentary .genre-title {
-        font-size: 0.54rem;
+        font-size: 1.2rem;
 
     }
 
 
     .genre-card.documentary-tv .genre-title {
-        font-size: 0.54rem;
-
+        font-size: 1.2rem;
     }
 
     .genre-card.thriller-tv .genre-title {
-        font-size: 0.54rem;
+        font-size: 1.2rem;
 
     }
 
 
     .genre-card.animation .genre-title {
-        font-size: 0.54rem;
+        font-size: 1.2rem;
         margin-right: -6px;
     }
 
     .genre-card.thriller .genre-title {
-        margin-right: -4px;
+        margin-right: 0px;
     }
 
     .genre-card.crime .genre-title {
         text-align: right;
-        margin-right: 5px;
+        /* margin-right: 5px; */
     }
 
     .genre-card.comedy-tv {
@@ -2956,12 +2999,22 @@ html {
 
     .genre-card.sci-fi .genre-title {
         text-align: right;
-        margin-right: 5px;
+        margin-right: 20px;
     }
 
     .genre-card.drama .genre-title {
         text-align: right;
-        margin-right: 1px;
+        margin-right: 10px;
+    }
+
+    .genre-card.action .genre-title {
+        text-align: right;
+        margin-right: 10px;
+    }
+
+    .genre-card.horror .genre-title {
+        text-align: right;
+        margin-right: 5px;
     }
 
     .genre-card.romance .genre-title {
@@ -2971,69 +3024,69 @@ html {
 
     .genre-card.drama-tv .genre-title {
         text-align: right;
-        margin-right: 1px;
+        margin-right: 10px;
     }
 
     .genre-card.crime-tv .genre-title {
         text-align: right;
-        margin-right: 3px;
+        margin-right: 15px;
     }
 
     .genre-card.action-tv .genre-title {
-        font-size: 0.54rem;
-        margin-right: -5px;
+        font-size: 1.2rem;
+        margin-right: -3px;
 
     }
 
     .genre-card.animation-tv .genre-title {
-        font-size: 0.54rem;
-        margin-right: -6px;
-    }
-
-    .genre-card.documentary-tv .genre-title {
-        margin-right: -6px;
-    }
-
-    .genre-card.documentary .genre-title {
-        margin-right: -6px;
-    }
-
-    .genre-card.thriller-tv .genre-title {
-        margin-right: -2.5px;
-    }
-
-    .genre-card.war .genre-title {
-        margin-right: -2.2px;
-    }
-
-    .genre-card.sci-fi-tv .genre-title {
+        font-size: 1.2rem;
         margin-right: -2px;
     }
 
+    .genre-card.documentary-tv .genre-title {
+        margin-right: 0px;
+    }
+
+    .genre-card.documentary .genre-title {
+        margin-right: 0px;
+    }
+
+    .genre-card.thriller-tv .genre-title {
+        margin-right: 2px;
+    }
+
+    .genre-card.war .genre-title {
+        margin-right: 0px;
+    }
+
+    .genre-card.sci-fi-tv .genre-title {
+        margin-right: 5px;
+    }
+
     .genre-card.paranormal .genre-title {
-        font-size: 0.52rem;
+        font-size: 1.18rem;
         margin-right: -10px;
 
     }
 
     .genre-card.monster .genre-title {
-        margin-right: -5px;
+        margin-right: 0px;
 
     }
 
     .genre-card.psychological .genre-title {
-        margin-right: -3px;
+        margin-right: 3px;
 
     }
 
 
     .genre-card.found .genre-title {
-        margin-right: -2px;
+        margin-right: 3px;
 
     }
 
     .genre-card.slasher .genre-title {
-        margin-right: -2px;
+        margin-right: 2px;
 
     }
 
@@ -3043,10 +3096,11 @@ html {
 
 
     .genre-badge {
-        bottom: 3px;
-        right: 5px;
-        font-size: 6.5px;
+        bottom: 10px;
+        right: 10px;
+        font-size: 13px;
         padding: 2px 6px;
+        background: rgba(0, 0, 0, 0.4);
 
     }
 
@@ -3074,6 +3128,7 @@ html {
         position: relative;
         height: 600px;
         overflow: hidden;
+        touch-action: pan-y;
     }
 
 
@@ -3103,6 +3158,7 @@ html {
         height: 200px;
         margin: 0;
         margin-bottom: -10px;
+        pointer-events: none;
 
     }
 
@@ -3146,7 +3202,7 @@ html {
     }
 
     .main-nav a {
-        font-size: 15px;
+        font-size: 17px;
     }
 
 
@@ -3242,7 +3298,7 @@ html {
         display: none;
     }
 
-    .title-tablet {
+    .title-tablet .js-title {
         font-size: 20px;
     }
 
@@ -3328,6 +3384,14 @@ html {
         display: block;
         margin: 0 auto;
         cursor: pointer;
+
+    }
+
+    .cast-member {
+        text-align: center;
+        width: 100px;
+        margin: 0;
+        display: grid;
 
     }
 
@@ -3425,6 +3489,8 @@ html {
         color: white;
         font-size: 20px;
     }
+
+
 
     .media-scroll {
         display: flex;
@@ -3670,6 +3736,24 @@ html {
 
     }
 
+    .sub-crew {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin: 30px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 14px 0;
+        margin-top: 5px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .star-inline-details {
+        margin-right: -5px;
+    }
 }
 
 /*laptops*/

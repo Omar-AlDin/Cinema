@@ -588,17 +588,19 @@ const renderDetails = function (movie) {
             const profileImage = imageUrl(act.profile_path, 'w185');
 
             attore.innerHTML =
-                `<div class="cast-images-names">
-                <img src=${profileImage} alt="${act.name}" class = "cast-image">
-        <h4 class="actor-name">${act.name}</h4>
+                `<img src=${profileImage} alt="${act.name}" class = "cast-image">
+                <div class=actor-name-character>
+<h4 class="actor-name">${act.name}</h4>
         <p class="character-name">${act.character}</p>
-        </div>`;
+        </div>
+        `;
 
             actorsContainer.append(attore)
+            console.log("attore", attore)
         });
 
         const viewMoreBtn = document.createElement('button');
-        viewMoreBtn.classList.add('btn-view-more');
+        viewMoreBtn.classList.add('btn-view-more', 'btn-view-more-mobile');
         viewMoreBtn.textContent = "View More →";
         actorsContainer.append(viewMoreBtn);
 
@@ -742,7 +744,7 @@ const renderDetailsTv = function (tv) {
         hideAll('.episode')
         showAll('.upcoming');
         hideAll('.rating')
-        hideAll('.star-icon-details')
+        hideAll('.star-inline-details')
 
     }
 
@@ -775,7 +777,7 @@ const renderDetailsTv = function (tv) {
         });
 
         const viewMoreBtn = document.createElement('button');
-        viewMoreBtn.classList.add('btn-view-more');
+        viewMoreBtn.classList.add('btn-view-more', 'btn-view-more-mobile');
         viewMoreBtn.textContent = "View More →";
         actorsContainer.append(viewMoreBtn);
 
@@ -890,11 +892,18 @@ const renderEpisode = function (seasonData) {
 <div class = "episode-info">
 <div class = "episode-header">
 <span class = "episode-number">${ep.episode_number}</span>
-<span class = "episode-rating"> ⭐ ${rating}</span>
+<span class="star-inline-details"><i data-lucide="star" class="star-icon-details star-episode"></i></span>
+<span class = "episode-rating">${rating}</span>
 <span class = "episode-name"> ${ep.name} </span>
 </div>
+
+<div class="episode-date-main">
 <p class = "episode-date"> ${nextEpisode(ep.air_date)} ${runtimeText}</p>
+</div>
+
+<div class="episode-overview-main">
 <p class = "episode-overview"> ${ep.overview || 'No overview available'}</p>
+</div>
 
 </div>
         </div>
@@ -902,6 +911,7 @@ const renderEpisode = function (seasonData) {
         );
 
     });
+    lucide.createIcons();
 
 }
 
@@ -1042,7 +1052,8 @@ const spans = function (movie) {
         hideAll('.budget-revenue')
         showAll('.upcoming');
         hideAll('.rating');
-        hideAll('.star-icon-details')
+        hideAll('.star-inline-details')
+        hideAll('.revenue')
 
     }
 
