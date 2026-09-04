@@ -251,6 +251,7 @@ const genresMovies = async function () {
     if (!genreSelect) return;
     try {
         const genreRes = await fetch(`https://api.themoviedb.org/3/genre/movie/list`, options);
+        if (!genreRes.ok) throw new Error(`HTTP response failed: ${genreRes.status}`);
         const genreData = await genreRes.json();
 
         // console.log("Genre Data", genreData)
@@ -426,7 +427,7 @@ const tvImage = async function (page = 1) {
         })
 
     } catch (err) {
-        console.error(` ${err.message}`)
+        console.error(`Something went wrong: ${err.message}`)
     } finally {
         isTvLoading = false;
     }
@@ -444,7 +445,7 @@ const genresTv = async function () {
     try {
         const genreRes = await fetch(`https://api.themoviedb.org/3/genre/tv/list`, options);
         const genreData = await genreRes.json();
-
+        if (!genreRes.ok) throw new Error(`HTTP response went wrong: ${genreRes.status}`)
         // console.log("Genre Data", genreData)
         genreData.genres.forEach(genre => {
             const option = document.createElement('option');
@@ -1075,8 +1076,10 @@ const spans = function (movie) {
     };
 };
 
+let curentMovieId = null;
 //----Media assets fetch
 const mediaAsset = async function (movieId) {
+    curentMovieId = movieId;
     const mediaType = isTv ? 'tv' : 'movie';
     const imagesUrl = `https://api.themoviedb.org/3/${mediaType}/${movieId}/images`;
     const videosUrl = `https://api.themoviedb.org/3/${mediaType}/${movieId}/videos`;
@@ -1086,7 +1089,8 @@ const mediaAsset = async function (movieId) {
             fetch(imagesUrl, options),
             fetch(videosUrl, options)
         ]);
-
+        if (!imageRes.ok) throw new Error(`HTTP Error ${imageRes.status}`);
+        if (!videoRes.ok) throw new Error(`HTTP Error ${videoRes.status}`);
         const imageData = await imageRes.json();
         const videoData = await videoRes.json();
 
@@ -1097,14 +1101,31 @@ const mediaAsset = async function (movieId) {
         mediaState.posters = imageData.posters || [];
         mediaState.videos = videoData.results || [];
 
-
+        return true;
     } catch (err) {
         console.error(`Error fetching media assets: ${err.message}`);
+        document.querySelector('.media-scroll').innerHTML = `
+<div class="media-error">
+<p>Unable to load trailers and photos.</p>
+<button onclick="retryMedia()">Retry Media</button>
+</div>
+`
+        return false;
     }
 }
 
 
-const media = document.querySelector('.media-scroll')
+const retryMedia = async function () {
+    if (curentMovieId) {
+        const ok = await mediaAsset(curentMovieId);
+        if (ok) {
+            renderPopular();
+            setActive(mostPopular);
+        }
+    }
+}
+
+const media = document.querySelector('.media-scroll');
 
 
 //Render Backdrops
@@ -1193,43 +1214,15 @@ let currentSearchController = null;
 let currentQuery = '';
 const seenSearch = new Set();
 
-const checkSearchSentinel = function () {
-    if (!searchSentinel || !currentQuery || isSearchLoading) return;
-    if (currentSearchPage >= numberOfSearchPages) return
-
-    const rect = searchSentinel.getBoundingClientRect();
-    const inView = rect.top < window.innerHeight + 300;
-
-    if (inView) {
-        if (currentSearchPage < searchPagePause) {
-            currentSearchPage++
-            fetchSearch(currentQuery, currentSearchPage).then(checkSearchSentinel);
-        } else {
-            if (searchLoadBtn) searchLoadBtn.style.display = 'block';
-        }
-    }
-};
 
 
-const observerSearch = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) checkSearchSentinel();
-    });
-}, observerOptions);
-
-if (searchSentinel) observerSearch.observe(searchSentinel);
-
-if (searchLoadBtn) {
-    searchLoadBtn.addEventListener('click', () => {
-        searchLoadBtn.style.display = 'none';
-        currentSearchPage++;
-        searchPagePause += 5;
-        fetchSearch(currentQuery, currentSearchPage);
-    });
-}
 
 
+
+
+let searchId = null;
 const fetchSearch = async function (query, page = 1) {
+    searchId = query;
     if (isSearchLoading) return;
     isSearchLoading = true;
 
@@ -1269,6 +1262,7 @@ const fetchSearch = async function (query, page = 1) {
             image.draggable = false;
             link.draggable = false;
             if (searchResults) searchResults.append(link);
+            return true;
 
         })
 
@@ -1279,12 +1273,57 @@ const fetchSearch = async function (query, page = 1) {
             console.log('Search aborted due to new query.');
             return;
         }
-        console.error(`Something went wrong: ${err.message}`)
+        console.error(`Something went wrong: ${err.message}`);
+        searchResults.innerHTML = `
+        <div class="search-error">
+        <p>Unable to load search results. Please check your internet connection</p>
+        </div>`
+        if (searchLoadBtn) searchLoadBtn.style.display = 'none';
+        return false;
     } finally {
         isSearchLoading = false;
     }
 }
 
+
+const observerSearch = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) checkSearchSentinel();
+    });
+}, observerOptions);
+
+if (searchSentinel) observerSearch.observe(searchSentinel);
+
+if (searchLoadBtn) {
+    searchLoadBtn.addEventListener('click', () => {
+        searchLoadBtn.style.display = 'none';
+        currentSearchPage++;
+        searchPagePause += 5;
+        fetchSearch(currentQuery, currentSearchPage);
+    });
+}
+
+
+const checkSearchSentinel = function () {
+    if (!searchSentinel || !currentQuery || isSearchLoading) return;
+    if (currentSearchPage >= numberOfSearchPages) return
+
+    const rect = searchSentinel.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight + 300;
+
+    if (inView) {
+        if (currentSearchPage < searchPagePause) {
+            currentSearchPage++
+            fetchSearch(currentQuery, currentSearchPage).then(ok => {
+                if (ok !== false) checkSearchSentinel();
+            });
+
+        } else {
+            if (searchLoadBtn) searchLoadBtn.style.display = 'block';
+
+        }
+    }
+};
 
 const runSearch = function (query) {
     if (currentSearchController) currentSearchController.abort();
@@ -1315,54 +1354,62 @@ if (searchInput) {
 const detailsImage = async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('id') || '4232'
+    try {
+        if (isTv) {
+            const tvUrl = `https://api.themoviedb.org/3/tv/${movieId}?append_to_response=credits,content_ratings`;
+            currentShowId = movieId;
 
-    if (isTv) {
-        const tvUrl = `https://api.themoviedb.org/3/tv/${movieId}?append_to_response=credits,content_ratings`;
-        currentShowId = movieId;
+            const tvRes = await fetch(tvUrl, options);
+            const tvData = await tvRes.json();
+            console.log("TV Data", tvData)
+            if (!tvRes.ok) throw new Error(`HTTP request went wrong: ${tvRes.status}`);
 
-        const tvRes = await fetch(tvUrl, options);
-        const tvData = await tvRes.json();
-        console.log("TV Data", tvData)
+            if (backdropImageTv) {
 
-        if (backdropImageTv) {
+                backdropImageTv.src = imageUrl(tvData.backdrop_path)
+                backdropImageTv.alt = `${tvData.name} Backdrop`;
+                document.querySelector('.ambient-glow').style.setProperty('--glow-image', `url(${imageUrl(tvData.backdrop_path)})`)
+            }
+            renderDetailsTv(tvData)
+            const mediaOk = await mediaAsset(movieId);
+            if (mediaOk) {
+                renderPopular();
+                setActive(mostPopular);
+            }
+            renderSeasonBtn(tvData);
+            trailerName(tvData);
 
-            backdropImageTv.src = imageUrl(tvData.backdrop_path)
-            backdropImageTv.alt = `${tvData.name} Backdrop`;
-            document.querySelector('.ambient-glow').style.setProperty('--glow-image', `url(${imageUrl(tvData.backdrop_path)})`)
+        } else if (moviePageContainer) {
+            // console.log("move grid")
+            const moviesUrl = `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=release_dates,credits`;
+            const movieRes = await fetch(moviesUrl, options)
+
+            const movieData = await movieRes.json();
+            console.log(movieData)
+
+            const images = formatedImage(movieData)
+            // console.log(images)
+
+            if (backdropImage) {
+                backdropImage.src = images.backdrop
+                backdropImage.alt = `${movieData.title} Backdrop`;
+                document.querySelector('.ambient-glow').style.setProperty('--glow-image', `url(${images.backdrop})`)
+
+            }
+            const mediaOk = await mediaAsset(movieId);
+            if (mediaOk) {
+                renderPopular();
+                setActive(mostPopular);
+            }
+            renderDetails(movieData);
+            spans(movieData)
+            await mediaAsset(movieId);
+            trailerName(movieData);
+
+
         }
-        renderDetailsTv(tvData)
-        await mediaAsset(movieId)
-        renderPopular();
-        setActive(mostPopular);
-
-        renderSeasonBtn(tvData);
-        trailerName(tvData);
-
-    } else if (moviePageContainer) {
-        // console.log("move grid")
-        const moviesUrl = `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=release_dates,credits`;
-        const movieRes = await fetch(moviesUrl, options)
-
-        const movieData = await movieRes.json();
-        console.log(movieData)
-
-        const images = formatedImage(movieData)
-        // console.log(images)
-
-        if (backdropImage) {
-            backdropImage.src = images.backdrop
-            backdropImage.alt = `${movieData.title} Backdrop`;
-            document.querySelector('.ambient-glow').style.setProperty('--glow-image', `url(${images.backdrop})`)
-
-        }
-        renderDetails(movieData);
-        spans(movieData)
-        await mediaAsset(movieId);
-        renderPopular();
-        setActive(mostPopular);
-        trailerName(movieData);
-
-
+    } catch (err) {
+        console.error(`Something went wrong: ${err.message}`);
     }
 }
 
@@ -1597,48 +1644,52 @@ const fetchHomepageBackdrops = async function () {
 
     if (!heroCarousel) return;
 
-    const backdropUrl = `https://api.themoviedb.org/3/trending/all/week`;
+    try {
+        const backdropUrl = `https://api.themoviedb.org/3/trending/all/week`;
 
-    const backdropRes = await fetch(backdropUrl, options);
-    const backdropData = await backdropRes.json();
-    const backdropDataSliced = backdropData.results
-        .filter(back => back.media_type === 'movie' || back.media_type === 'tv') //so we don't get celebrities
-        .filter(back => back.backdrop_path)
-        .filter(back => back.vote_count >= 50)
-        .slice(0, 5)
-    // console.log("Slice", backdropDataSliced)
-    const detailsPromise = backdropDataSliced.map(m => {
-        const url = m.media_type === 'tv'
-            ? `https://api.themoviedb.org/3/tv/${m.id}?append_to_response=content_ratings,images,videos&include_image_language=en,null`
-            : `https://api.themoviedb.org/3/movie/${m.id}?append_to_response=release_dates,images,videos&include_image_language=en,null`
+        const backdropRes = await fetch(backdropUrl, options);
+        if (!backdropRes.ok) throw new Error(`HTTP response went wrong: ${backdropRes.status}`);
+        const backdropData = await backdropRes.json();
+        const backdropDataSliced = backdropData.results
+            .filter(back => back.media_type === 'movie' || back.media_type === 'tv') //so we don't get celebrities
+            .filter(back => back.backdrop_path)
+            .filter(back => back.vote_count >= 50)
+            .slice(0, 5)
+        // console.log("Slice", backdropDataSliced)
+        const detailsPromise = backdropDataSliced.map(m => {
+            const url = m.media_type === 'tv'
+                ? `https://api.themoviedb.org/3/tv/${m.id}?append_to_response=content_ratings,images,videos&include_image_language=en,null`
+                : `https://api.themoviedb.org/3/movie/${m.id}?append_to_response=release_dates,images,videos&include_image_language=en,null`
 
-        return fetch(url, options)
-            .then(res => res.json())
-            .then(data => ({ media_type: m.media_type, data }));
+            return fetch(url, options)
+                .then(res => res.json())
+                .then(data => ({ media_type: m.media_type, data }));
+        }
+
+        );
+
+        heroItems = await Promise.all(detailsPromise);
+        console.log("heroItems", heroItems);
+
+        heroCarousel.innerHTML = '';
+
+        heroItems.forEach((back, index) => {
+            const slide = document.createElement('div');
+            slide.classList.add('hero-slide');
+            if (index === 0) slide.classList.add('active');
+            slide.style.backgroundImage = `url(${imageUrl(back.data.backdrop_path)})`
+            heroCarousel.append(slide);
+
+        });
+
+        slides = document.querySelectorAll('.hero-slide');
+        renderHero(heroItems[0]);
+
+        startAutoplay();
+    } catch (err) {
+        console.error(`Error fetching homepage backdrop: ${err.message}`)
     }
-
-    );
-
-    heroItems = await Promise.all(detailsPromise);
-    console.log("heroItems", heroItems);
-
-    heroCarousel.innerHTML = '';
-
-    heroItems.forEach((back, index) => {
-        const slide = document.createElement('div');
-        slide.classList.add('hero-slide');
-        if (index === 0) slide.classList.add('active');
-        slide.style.backgroundImage = `url(${imageUrl(back.data.backdrop_path)})`
-        heroCarousel.append(slide);
-
-    });
-
-    slides = document.querySelectorAll('.hero-slide');
-    renderHero(heroItems[0]);
-
-    startAutoplay();
-};
-
+}
 
 const heroTrailerBtn = document.querySelector('#hero-trailer-btn');
 const heroDetails = document.querySelector('#hero-details-link');
@@ -1722,23 +1773,24 @@ let touchStartX = 0;
 let touchEndX = 0;
 const swipeThreshold = 50; // minimum px drag to count as a swipe
 
-heroCarousel.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-}, { passive: true });
+if (heroCarousel) {
+    heroCarousel.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+    }, { passive: true });
 
-heroCarousel.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].clientX;
-    const deltaX = touchEndX - touchStartX;
+    heroCarousel.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].clientX;
+        const deltaX = touchEndX - touchStartX;
 
-    if (Math.abs(deltaX) < swipeThreshold) return; // too small, ignore as a tap
+        if (Math.abs(deltaX) < swipeThreshold) return; // too small, ignore as a tap
 
-    if (deltaX < 0) {
-        showNextSlides(); // swiped left → go forward
-    } else {
-        showPrevSlide(); // swiped right → go back
-    }
-});
-
+        if (deltaX < 0) {
+            showNextSlides(); // swiped left → go forward
+        } else {
+            showPrevSlide(); // swiped right → go back
+        }
+    });
+}
 
 const PopularNowHome = [];
 const mainHomePage = document.querySelector('.main-homepage')
@@ -1748,31 +1800,34 @@ const popularNow = document.querySelector('.popular-now');
 const renderPopularHome = async function (mediaType = 'movie') {
     if (!mainHomePage) return;
 
-    const url = `https://api.themoviedb.org/3/discover/${mediaType}?sort_by=popularity_desc`;
-    const urlRes = await fetch(url, options);
-    const urlData = await urlRes.json();
+    try {
+        const url = `https://api.themoviedb.org/3/discover/${mediaType}?sort_by=popularity_desc`;
+        const urlRes = await fetch(url, options);
+        const urlData = await urlRes.json();
+        if (!urlRes.ok) throw new Error(`HTTP response went wrong: ${urlRes.status}`)
+        const dataSliced = urlData.results.slice(0, 14);
 
-    const dataSliced = urlData.results.slice(0, 14);
+        popularNow.innerHTML = '';
 
-    popularNow.innerHTML = '';
+        dataSliced.forEach(el => {
+            const detailsPage = mediaType === 'movie' ? 'movie-details.html' : 'tv-details.html';
+            const image = document.createElement('img');
+            image.classList.add('popular-poster');
+            image.alt = mediaType === 'movie' ? el.title : el.name;
+            image.src = imageUrl(el.poster_path, 'w500')
+            const link = document.createElement('a');
+            link.href = `${detailsPage}?id=${el.id}`
+            link.classList.add('poster-link');
+            link.append(image);
+            image.draggable = false;
+            link.draggable = false;
+            popularNow.append(link);
 
-    dataSliced.forEach(el => {
-        const detailsPage = mediaType === 'movie' ? 'movie-details.html' : 'tv-details.html';
-        const image = document.createElement('img');
-        image.classList.add('popular-poster');
-        image.alt = mediaType === 'movie' ? el.title : el.name;
-        image.src = imageUrl(el.poster_path, 'w500')
-        const link = document.createElement('a');
-        link.href = `${detailsPage}?id=${el.id}`
-        link.classList.add('poster-link');
-        link.append(image);
-        image.draggable = false;
-        link.draggable = false;
-        popularNow.append(link);
-
-    });
+        });
+    } catch (err) {
+        console.error(`Error rendering popular now: ${err.message}`)
+    }
 }
-
 const seeAllLinks = document.querySelector('.link .see-all');
 
 popularTab.forEach(tab => {
@@ -1793,74 +1848,88 @@ popularTab.forEach(tab => {
 const highlyRated = document.querySelector('.highly-rated-main');
 
 const renderHighlyRated = async function () {
-    const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=5000&include_adult=false`
-    const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=vote_average.desc&vote_count.gte=1500&include_adult=false`;
+    if (!highlyRated) return
 
-    const [movieRes, tvRes] = await Promise.all([
-        fetch(movieUrl, options),
-        fetch(tvUrl, options)
-    ]);
+    try {
+        const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=5000&include_adult=false`
+        const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=vote_average.desc&vote_count.gte=1500&include_adult=false`;
 
-    const movieData = await movieRes.json();
-    const tvData = await tvRes.json();
+        const [movieRes, tvRes] = await Promise.all([
+            fetch(movieUrl, options),
+            fetch(tvUrl, options)
+        ]);
+        if (!movieRes.ok) throw new Error(`HTTP response went wrong: ${movieRes.status}`);
+        if (!tvRes.ok) throw new Error(`HTTP response went wrong: ${tvRes.status}`)
 
-    console.log("Hi", movieData, tvData);
+        const movieData = await movieRes.json();
+        const tvData = await tvRes.json();
 
-    const movieSliced = movieData.results.slice(0, 7);
-    const tvSliced = tvData.results.slice(0, 7);
+        console.log("Hi", movieData, tvData);
 
-    const tvAndMovie = [...movieSliced, ...tvSliced];
-    tvAndMovie.sort((a, b) => b.vote_average - a.vote_average);
-    console.log("TV and movie", tvAndMovie);
+        const movieSliced = movieData.results.slice(0, 7);
+        const tvSliced = tvData.results.slice(0, 7);
 
-    tvAndMovie.forEach(item => {
-        const image = document.createElement('img');
-        image.alt = item.first_air_date ? item.name : item.title;
-        image.classList.add('highly-rated-poster');
-        image.src = imageUrl(item.poster_path, 'w500')
-        const link = document.createElement('a');
-        link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
-        link.classList.add('highly-rated-link');
-        link.append(image);
-        image.draggable = false;
-        link.draggable = false;
-        highlyRated.append(link);
+        const tvAndMovie = [...movieSliced, ...tvSliced];
+        tvAndMovie.sort((a, b) => b.vote_average - a.vote_average);
+        console.log("TV and movie", tvAndMovie);
+
+        tvAndMovie.forEach(item => {
+            const image = document.createElement('img');
+            image.alt = item.first_air_date ? item.name : item.title;
+            image.classList.add('highly-rated-poster');
+            image.src = imageUrl(item.poster_path, 'w500')
+            const link = document.createElement('a');
+            link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
+            link.classList.add('highly-rated-link');
+            link.append(image);
+            image.draggable = false;
+            link.draggable = false;
+            highlyRated.append(link);
 
 
-    })
+        })
 
 
+    } catch (err) {
+        console.error(`Something went wrong: ${err.message}`)
+    }
 }
 
-
-
+const hiddenGemsMain = document.querySelector('.hidden-gem-main')
 //Hidden Gems
 const renderGems = async function () {
-    const hiddenGemData = document.querySelector('.hidden-gem-main');
-    const request = hiddenGems.map(item =>
-        fetch(`https://api.themoviedb.org/3/${item.type}/${item.id}`, options).then(res => res.json())
-    );
+    if (!hiddenGemsMain) return;
+    try {
+        const hiddenGemData = document.querySelector('.hidden-gem-main');
+        const request = hiddenGems.map(async item => {
+            const res = await fetch(`https://api.themoviedb.org/3/${item.type}/${item.id}`, options);
+            if (!res.ok) throw new Error(`Failed to fetch ${item.type} (ID: ${item.id}) - Status: ${res.status}`);
+            return await res.json();
+        });
 
-    const gems = await Promise.all(request);
+        const gems = await Promise.all(request);
 
-    console.log("gems", gems);
+        console.log("gems", gems);
 
-    gems.forEach(item => {
-        const detailsPage = item.first_air_date ? 'tv-details.html' : 'movie-details.html'
-        const image = document.createElement('img');
-        image.alt = item.first_air_date ? item.name : item.title;
-        image.classList.add('hidden-gem-poster');
-        image.src = imageUrl(item.poster_path, 'w500')
-        const link = document.createElement('a');
-        link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
-        link.classList.add('hidden-gem-link');
-        link.append(image);
-        image.draggable = false;
-        link.draggable = false;
-        hiddenGemData.append(link);
-    });
+        gems.forEach(item => {
+            const detailsPage = item.first_air_date ? 'tv-details.html' : 'movie-details.html'
+            const image = document.createElement('img');
+            image.alt = item.first_air_date ? item.name : item.title;
+            image.classList.add('hidden-gem-poster');
+            image.src = imageUrl(item.poster_path, 'w500')
+            const link = document.createElement('a');
+            link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
+            link.classList.add('hidden-gem-link');
+            link.append(image);
+            image.draggable = false;
+            link.draggable = false;
+            hiddenGemData.append(link);
+        });
 
 
+    } catch (err) {
+        console.error(`Something rendering gems: ${err.message}`)
+    }
 }
 
 const getDaysAgo = function (daysAgo) {
@@ -1870,45 +1939,57 @@ const getDaysAgo = function (daysAgo) {
 }
 
 const renderNew = async function () {
-
-    const today = getDaysAgo(0);
-    const sixWeeksAgo = getDaysAgo(45);
-
     const newMain = document.querySelector('.new-main');
+    if (!newMain) return;
 
-    const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=primary_release_date.desc&primary_release_date.gte=${sixWeeksAgo}&primary_release_date.lte=${today}&vote_count.gte=20&include_adult=false`;
 
-    const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=first_air_date.desc&first_air_date.gte=${sixWeeksAgo}&first_air_date.lte=${today}&vote_count.gte=7&include_adult=false`;
+    try {
 
-    const [movieRes, tvRes] = await Promise.all([
-        fetch(movieUrl, options),
-        fetch(tvUrl, options)
-    ]);
 
-    const movieData = await movieRes.json();
-    const tvData = await tvRes.json();
+        const today = getDaysAgo(0);
+        const sixWeeksAgo = getDaysAgo(45);
 
-    const newMovieSliced = movieData.results.slice(0, 7);
-    const newTvSliced = tvData.results.slice(0, 7);
 
-    const newMovieAndTv = [...newMovieSliced, ...newTvSliced]
-    newMovieAndTv.sort((a, b) => b.vote_average - a.vote_average)
-    console.log("MV", newMovieAndTv);
+        const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=primary_release_date.desc&primary_release_date.gte=${sixWeeksAgo}&primary_release_date.lte=${today}&vote_count.gte=20&include_adult=false`;
 
-    newMovieAndTv.forEach(item => {
-        const image = document.createElement('img');
-        image.alt = item.first_air_date ? item.name : item.title;
-        image.classList.add('new-poster');
-        image.src = imageUrl(item.poster_path, 'w500');
+        const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=first_air_date.desc&first_air_date.gte=${sixWeeksAgo}&first_air_date.lte=${today}&vote_count.gte=7&include_adult=false`;
 
-        const link = document.createElement('a');
-        link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
-        link.classList.add('new-link');
-        link.append(image);
-        image.draggable = false;
-        link.draggable = false;
-        newMain.append(link);
-    });
+        const [movieRes, tvRes] = await Promise.all([
+            fetch(movieUrl, options),
+            fetch(tvUrl, options)
+        ]);
+
+        if (!movieRes.ok) throw new Error(`HTTP response went wrong: ${movieRes.status}`);
+        if (!tvRes.ok) throw new Error(`HTTP response went wrong: ${tvRes.status}`);
+
+
+        const movieData = await movieRes.json();
+        const tvData = await tvRes.json();
+
+        const newMovieSliced = movieData.results.slice(0, 7);
+        const newTvSliced = tvData.results.slice(0, 7);
+
+        const newMovieAndTv = [...newMovieSliced, ...newTvSliced]
+        newMovieAndTv.sort((a, b) => b.vote_average - a.vote_average)
+        console.log("MV", newMovieAndTv);
+
+        newMovieAndTv.forEach(item => {
+            const image = document.createElement('img');
+            image.alt = item.first_air_date ? item.name : item.title;
+            image.classList.add('new-poster');
+            image.src = imageUrl(item.poster_path, 'w500');
+
+            const link = document.createElement('a');
+            link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
+            link.classList.add('new-link');
+            link.append(image);
+            image.draggable = false;
+            link.draggable = false;
+            newMain.append(link);
+        });
+    } catch (err) {
+        console.error(`Error rendering new releases: ${err.message}`);
+    }
 }
 
 const getDaysInFuture = function (daysAhead) {
@@ -1919,49 +2000,56 @@ const getDaysInFuture = function (daysAhead) {
 
 
 const renderComingSoon = async function () {
-
     const upComingMain = document.querySelector('.upcoming-main');
     if (!upComingMain) return;
-
-    const today = getDaysAgo(0);
-    const threeMonths = getDaysInFuture(50);
-
-    const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&primary_release_date.gte=${today}&with_original_language=en&include_adult=false`;
+    try {
 
 
-    const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=popularity.desc&first_air_date.gte=${today}&with_original_language=en&include_adult=false`;
+        const today = getDaysAgo(0);
+        const threeMonths = getDaysInFuture(50);
 
-    const [movieRes, tvRes] = await Promise.all([
-        fetch(movieUrl, options),
-        fetch(tvUrl, options)
-    ]);
-    const movieData = await movieRes.json();
-    const tvData = await tvRes.json();
+        const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&primary_release_date.gte=${today}&with_original_language=en&include_adult=false`;
 
-    const movieSliced = movieData.results.slice(0, 7);
-    const tvSliced = tvData.results.slice(0, 7);
-    const movieAndTv = [...movieSliced, ...tvSliced];
 
-    movieAndTv.sort((a, b) => b.popularity - a.popularity);
-    console.log("coming soon", movieAndTv);
+        const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=popularity.desc&first_air_date.gte=${today}&with_original_language=en&include_adult=false`;
 
-    movieAndTv.forEach(item => {
-        if (!item.poster_path) return;
-        const image = document.createElement('img')
-        image.alt = item.first_air_date ? item.name : item.title;
-        image.classList.add('upcoming-poster');
-        image.src = imageUrl(item.poster_path, 'w500');
-        image.draggable = false;
-        const link = document.createElement('a');
-        link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
-        link.classList.add('upcoming-link');
-        link.append(image);
-        link.draggable = false;
-        upComingMain.append(link);
+        const [movieRes, tvRes] = await Promise.all([
+            fetch(movieUrl, options),
+            fetch(tvUrl, options)
+        ]);
 
-    })
+        if (!movieRes.ok) throw new Error(`HTTP response went wrong: ${movieRes.status}`);
+        if (!tvRes.ok) throw new Error(`HTTP response went wrong: ${tvRes.status}`);
+
+        const movieData = await movieRes.json();
+        const tvData = await tvRes.json();
+
+        const movieSliced = movieData.results.slice(0, 7);
+        const tvSliced = tvData.results.slice(0, 7);
+        const movieAndTv = [...movieSliced, ...tvSliced];
+
+        movieAndTv.sort((a, b) => b.popularity - a.popularity);
+        console.log("coming soon", movieAndTv);
+
+        movieAndTv.forEach(item => {
+            if (!item.poster_path) return;
+            const image = document.createElement('img')
+            image.alt = item.first_air_date ? item.name : item.title;
+            image.classList.add('upcoming-poster');
+            image.src = imageUrl(item.poster_path, 'w500');
+            image.draggable = false;
+            const link = document.createElement('a');
+            link.href = item.first_air_date ? `tv-details.html?id=${item.id}` : `movie-details.html?id=${item.id}`;
+            link.classList.add('upcoming-link');
+            link.append(image);
+            link.draggable = false;
+            upComingMain.append(link);
+
+        })
+    } catch (err) {
+        console.error(`Error rendering coming soon: ${err.message}`)
+    }
 }
-
 
 const homeReady = Promise.all([
     fetchHomepageBackdrops(),
