@@ -1,12 +1,11 @@
 'use strict'
 
-const accessToken = '';
+const BASE_URL = 'https://bold-wood-ed55.o01604672.workers.dev/api';
 
 const options = {
     method: 'GET',
     headers: {
         accept: 'application/json',
-        Authorization: `Bearer ${accessToken}`
 
     }
 };
@@ -249,7 +248,7 @@ const fetchMovies = async function (page = 1) {
         const minVote = isArabic ? 5 : (currentFilters.keyword ? 5 : voteCount);
         const effectiveMinRating = currentFilters.minRating || (isArabic ? '5.5' : '');
 
-        let movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=${currentFilters.sortBy}&page=${page}&vote_count.gte=${minVote}&include_adult=false`;
+        let movieUrl = `${BASE_URL}/discover/movie?sort_by=${currentFilters.sortBy}&page=${page}&vote_count.gte=${minVote}&include_adult=false`;
         // const effective
 
         if (currentFilters.genre) {
@@ -359,7 +358,7 @@ const genresMovies = async function () {
 
     if (!genreSelect) return;
     try {
-        const genreRes = await fetch(`https://api.themoviedb.org/3/genre/movie/list`, options);
+        const genreRes = await fetch(`${BASE_URL}/genre/movie/list`, options);
         if (!genreRes.ok) throw new Error(`HTTP response failed: ${genreRes.status}`);
         const genreData = await genreRes.json();
 
@@ -492,7 +491,7 @@ const tvImage = async function (page = 1) {
 
         const effectiveRating = currentFiltersTv.minRating || (isArabic ? '5.5' : '');
         if (!tvGrid) throw new Error("Movies is currenlty displayed")
-        let tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=${currentFiltersTv.sortBy}&page=${page}&vote_count.gte=${minVote}&include_adult=false`;
+        let tvUrl = `${BASE_URL}/discover/tv?sort_by=${currentFiltersTv.sortBy}&page=${page}&vote_count.gte=${minVote}&include_adult=false`;
 
 
         if (currentFiltersTv.genre) {
@@ -585,7 +584,7 @@ const genresTv = async function () {
     const genreSelect = document.querySelector('#tv-genre-select');
     if (!genreSelect) return;
     try {
-        const genreRes = await fetch(`https://api.themoviedb.org/3/genre/tv/list`, options);
+        const genreRes = await fetch(`${BASE_URL}/genre/tv/list`, options);
         const genreData = await genreRes.json();
         if (!genreRes.ok) throw new Error(`HTTP response went wrong: ${genreRes.status}`)
         // console.log("Genre Data", genreData)
@@ -645,6 +644,16 @@ const showAll = (selector) => {
     document.querySelectorAll(selector).forEach(el => el.classList.remove('hidden'))
 }
 
+const setTagline = function (taglineText) {
+    document.querySelectorAll('.tagline').forEach(el => {
+        if (taglineText) {
+            el.textContent = taglineText;
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
+    });
+};
 
 //Image URL Function
 const imageUrl = (path, size = 'original') =>
@@ -689,7 +698,7 @@ const renderDetails = function (movie) {
 
     setAllText('.js-runtime', (movie.runtime / 60).toFixed(0) + "h" + ' ' + (movie.runtime % 60) + "m");
 
-    if (tagline) setAllText('.tagline', movie.tagline || "");
+    setTagline(movie.tagline);
 
     if (overview) setAllText('.overview', movie.overview || "");
 
@@ -899,7 +908,7 @@ const renderDetailsTv = function (tv) {
     });
 
 
-    setAllText('.tagline', tv.tagline);
+    setTagline(tv.tagline);
     setAllText('.overview', tv.overview);
 
     if (actorsContainer) {
@@ -1010,7 +1019,7 @@ const loadSeason = async function (tvId = 113962, season = 1) {
     if (!seasonEpi) return;
     seasonEpi.innerHTML = '<p>Loading episodes....</p>';
     try {
-        const seasonUrl = `https://api.themoviedb.org/3/tv/${tvId}/season/${season}`
+        const seasonUrl = `${BASE_URL}/tv/${tvId}/season/${season}`
         const seasonRes = await fetch(seasonUrl, options);
         if (!seasonRes.ok) throw new Error(`HTTP error: ${seasonRes.status}`);
         const seasonData = await seasonRes.json();
@@ -1224,8 +1233,8 @@ let curentMovieId = null;
 const mediaAsset = async function (movieId) {
     curentMovieId = movieId;
     const mediaType = isTv ? 'tv' : 'movie';
-    const imagesUrl = `https://api.themoviedb.org/3/${mediaType}/${movieId}/images`;
-    const videosUrl = `https://api.themoviedb.org/3/${mediaType}/${movieId}/videos`;
+    const imagesUrl = `${BASE_URL}/${mediaType}/${movieId}/images`;
+    const videosUrl = `${BASE_URL}/${mediaType}/${movieId}/videos`;
 
     try {
         const [imageRes, videoRes] = await Promise.all([
@@ -1394,7 +1403,7 @@ const fetchSearch = async function (query, page = 1) {
 
     const signal = currentSearchController ? currentSearchController.signal : undefined;
     try {
-        const searchUrl = `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(query)}&page=${page}&include_adult=false`
+        const searchUrl = `${BASE_URL}/search/multi?query=${encodeURIComponent(query)}&page=${page}&include_adult=false`
         const searchRes = await fetch(searchUrl, { ...options, signal });
         if (!searchRes.ok) throw new Error(`HTTP response error ${searchRes.status}`);
         const searchData = await searchRes.json();
@@ -1522,7 +1531,7 @@ const detailsImage = async function () {
     const movieId = urlParams.get('id') || '4232'
     try {
         if (isTv) {
-            const tvUrl = `https://api.themoviedb.org/3/tv/${movieId}?append_to_response=credits,content_ratings`;
+            const tvUrl = `${BASE_URL}/tv/${movieId}?append_to_response=credits,content_ratings`;
             currentShowId = movieId;
 
             const tvRes = await fetch(tvUrl, options);
@@ -1547,7 +1556,7 @@ const detailsImage = async function () {
 
         } else if (moviePageContainer) {
             // console.log("move grid")
-            const moviesUrl = `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=release_dates,credits`;
+            const moviesUrl = `${BASE_URL}/movie/${movieId}?append_to_response=release_dates,credits`;
             const movieRes = await fetch(moviesUrl, options)
 
             const movieData = await movieRes.json();
@@ -1811,7 +1820,7 @@ const fetchHomepageBackdrops = async function () {
     if (!heroCarousel) return;
 
     try {
-        const backdropUrl = `https://api.themoviedb.org/3/trending/all/week`;
+        const backdropUrl = `${BASE_URL}/trending/all/week`;
 
         const backdropRes = await fetch(backdropUrl, options);
         if (!backdropRes.ok) throw new Error(`HTTP response went wrong: ${backdropRes.status}`);
@@ -1824,8 +1833,8 @@ const fetchHomepageBackdrops = async function () {
         // console.log("Slice", backdropDataSliced)
         const detailsPromise = backdropDataSliced.map(m => {
             const url = m.media_type === 'tv'
-                ? `https://api.themoviedb.org/3/tv/${m.id}?append_to_response=content_ratings,images,videos&include_image_language=en,null`
-                : `https://api.themoviedb.org/3/movie/${m.id}?append_to_response=release_dates,images,videos&include_image_language=en,null`
+                ? `${BASE_URL}/tv/${m.id}?append_to_response=content_ratings,images,videos&include_image_language=en,null`
+                : `${BASE_URL}/movie/${m.id}?append_to_response=release_dates,images,videos&include_image_language=en,null`
 
             return fetch(url, options)
                 .then(res => res.json())
@@ -1967,7 +1976,7 @@ const renderPopularHome = async function (mediaType = 'movie') {
     if (!mainHomePage) return;
 
     try {
-        const url = `https://api.themoviedb.org/3/discover/${mediaType}?sort_by=popularity_desc`;
+        const url = `${BASE_URL}/discover/${mediaType}?sort_by=popularity_desc`;
         const urlRes = await fetch(url, options);
         const urlData = await urlRes.json();
         if (!urlRes.ok) throw new Error(`HTTP response went wrong: ${urlRes.status}`)
@@ -2017,8 +2026,8 @@ const renderHighlyRated = async function () {
     if (!highlyRated) return
 
     try {
-        const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&vote_count.gte=5000&include_adult=false`
-        const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=vote_average.desc&vote_count.gte=1500&include_adult=false`;
+        const movieUrl = `${BASE_URL}/discover/movie?sort_by=vote_average.desc&vote_count.gte=5000&include_adult=false`
+        const tvUrl = `${BASE_URL}/discover/tv?sort_by=vote_average.desc&vote_count.gte=1500&include_adult=false`;
 
         const [movieRes, tvRes] = await Promise.all([
             fetch(movieUrl, options),
@@ -2068,7 +2077,7 @@ const renderGems = async function () {
     try {
         const hiddenGemData = document.querySelector('.hidden-gem-main');
         const request = hiddenGems.map(async item => {
-            const res = await fetch(`https://api.themoviedb.org/3/${item.type}/${item.id}`, options);
+            const res = await fetch(`${BASE_URL}/${item.type}/${item.id}`, options);
             if (!res.ok) throw new Error(`Failed to fetch ${item.type} (ID: ${item.id}) - Status: ${res.status}`);
             return await res.json();
         });
@@ -2115,9 +2124,9 @@ const renderNew = async function () {
         const sixWeeksAgo = getDaysAgo(45);
 
 
-        const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=primary_release_date.desc&primary_release_date.gte=${sixWeeksAgo}&primary_release_date.lte=${today}&vote_count.gte=20&include_adult=false`;
+        const movieUrl = `${BASE_URL}/discover/movie?sort_by=primary_release_date.desc&primary_release_date.gte=${sixWeeksAgo}&primary_release_date.lte=${today}&vote_count.gte=20&include_adult=false`;
 
-        const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=first_air_date.desc&first_air_date.gte=${sixWeeksAgo}&first_air_date.lte=${today}&vote_count.gte=7&include_adult=false`;
+        const tvUrl = `${BASE_URL}/discover/tv?sort_by=first_air_date.desc&first_air_date.gte=${sixWeeksAgo}&first_air_date.lte=${today}&vote_count.gte=7&include_adult=false`;
 
         const [movieRes, tvRes] = await Promise.all([
             fetch(movieUrl, options),
@@ -2172,10 +2181,10 @@ const renderComingSoon = async function () {
         const today = getDaysAgo(0);
         const threeMonths = getDaysInFuture(50);
 
-        const movieUrl = `https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&primary_release_date.gte=${today}&with_original_language=en&include_adult=false`;
+        const movieUrl = `${BASE_URL}/discover/movie?sort_by=popularity.desc&primary_release_date.gte=${today}&with_original_language=en&include_adult=false`;
 
 
-        const tvUrl = `https://api.themoviedb.org/3/discover/tv?sort_by=popularity.desc&first_air_date.gte=${today}&with_original_language=en&include_adult=false`;
+        const tvUrl = `${BASE_URL}/discover/tv?sort_by=popularity.desc&first_air_date.gte=${today}&with_original_language=en&include_adult=false`;
 
         const [movieRes, tvRes] = await Promise.all([
             fetch(movieUrl, options),

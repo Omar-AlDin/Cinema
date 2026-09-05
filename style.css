@@ -2258,20 +2258,92 @@ html {
     font-weight: 600;
 }
 
-.hidden {
-    display: none;
+.genre-card {
+    cursor: default;
+    opacity: 0.65;
 }
 
+
+
+
+.genre-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.genre-card.horror,
+.genre-card.slasher,
+.genre-card.psychological,
+.genre-card.paranormal,
+.genre-card.monster,
+.genre-card.body,
+.genre-card.zombie,
+.genre-card.found,
+.genre-card.comedy-horror {
+    cursor: pointer;
+    opacity: 1;
+}
+
+.genre-card.horror:hover,
+.genre-card.slasher:hover,
+.genre-card.psychological:hover,
+.genre-card.paranormal:hover,
+.genre-card.monster:hover,
+.genre-card.body:hover,
+.genre-card.zombie:hover,
+.genre-card.found:hover,
+.genre-card.comedy-horror:hover {
+    transform: translateY(-5px) scale(1.015);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+
+
+}
+
+
+
 .logo {
-    width: 45px;
+    width: 30px;
     height: auto;
     display: inline-flex;
     padding: 0;
     margin: 0;
     align-items: center;
     position: relative;
-    top: 2px;
+    top: 1px;
 
+}
+
+.available-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #ffb400;
+    /* Warm Cinema Gold */
+    color: #0f1115;
+    /* Dark text for crisp contrast */
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(255, 180, 0, 0.3);
+    text-transform: uppercase;
+    z-index: 3;
+    margin-top: 2px;
+}
+
+.available-badge .lucide {
+    width: 15px;
+    height: 15px;
+    stroke-width: 2.5;
+}
+
+
+.hidden {
+    display: none;
 }
 
 /* mobile */
@@ -2590,7 +2662,7 @@ html {
 
     .details-bottom {
         flex-direction: column;
-        gap: 20px;
+        gap: 12px;
     }
 
     .left-column {
@@ -2607,6 +2679,7 @@ html {
         position: static;
         width: 160px;
         flex-shrink: 0;
+        margin-bottom: -3px;
 
     }
 
@@ -2684,16 +2757,15 @@ html {
         display: none;
     }
 
-    .rating-mobile,
-    .mobile-star-rating {
+
+    .rating-mobile {
         margin-bottom: 0px;
         margin-left: 0px;
         display: inline-flex;
+        margin-top: 0px;
     }
 
-    .mobile-star-rating {
-        margin-bottom: 15px;
-    }
+
 
     .star-inline-details {
         margin-right: 1px;
@@ -2701,12 +2773,11 @@ html {
 
     .star-episode {
         margin-right: -5px;
-        ;
     }
 
     .rating-mobile .rating {
         color: #fff;
-        margin-bottom: 0px;
+        margin-bottom: 0;
 
     }
 
@@ -2767,10 +2838,12 @@ html {
         color: #d1d5db;
         border-left: 3px solid #e50914;
         padding-left: 12px;
-        margin: 0px 0 0px 0;
+        margin: 10px 0 13px 0;
     }
 
-
+    .tagline-overview .overview {
+        margin-top: 8px;
+    }
 
     .btn-view-more {
         margin-right: -200px;
@@ -3163,16 +3236,31 @@ html {
     }
 
     .logo {
-        width: 43px;
+        width: 35px;
         height: auto;
         display: grid;
         padding: 0;
         margin: 0;
-        margin-left: 40px;
+        margin-left: 45px;
 
         justify-content: center;
         align-items: center;
     }
+
+    .available-badge {
+        font-size: 6px;
+        padding: 2px 7px;
+        margin-top: 0px;
+    }
+
+
+
+    .available-badge .lucide {
+        width: 13px;
+        height: 13px;
+        stroke-width: 2.5;
+    }
+
 
 
 }
