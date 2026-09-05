@@ -4,6 +4,10 @@ A modern movie and TV discovery platform built with vanilla HTML, CSS, and JavaS
 
 Cinema Cafe combines movie and TV discovery with a cinematic interface, detailed media pages, genre exploration, search, and a movie guessing game.
 
+## 🌐 Live Demo
+
+▶️ **[Launch Cinema Cafe](https://omar-aldin.github.io/cinema-cafe/)**
+
 ## ✨ Features
 
 - 🎬 Movie and TV show discovery
