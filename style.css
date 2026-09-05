@@ -2759,7 +2759,7 @@ html {
 
 
     .rating-mobile {
-        margin-bottom: 0px;
+        margin-bottom: 30px;
         margin-left: 0px;
         display: inline-flex;
         margin-top: 0px;
@@ -2804,7 +2804,7 @@ html {
         letter-spacing: 0.6;
         vertical-align: middle;
         margin: 0px;
-        margin-bottom: 20px;
+        margin-bottom: 2px;
 
     }
 
@@ -2842,7 +2842,12 @@ html {
     }
 
     .tagline-overview .overview {
-        margin-top: 8px;
+        margin-top: -15px;
+    }
+
+    .tagline-overview .tagline {
+        margin-top: -15px;
+        margin-bottom: 28px;
     }
 
     .btn-view-more {
@@ -4057,7 +4062,15 @@ html {
 
     .overview-tablet {
         display: block;
-        margin-top: 35px;
+        margin-top: 40px;
+    }
+
+    .overview-tablet .overview {
+        margin-top: -22px;
+    }
+
+    .overview-tablet .tagline {
+        margin-bottom: 35px;
     }
 
     .trailer-mobile {
