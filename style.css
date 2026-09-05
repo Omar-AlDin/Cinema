@@ -3088,7 +3088,8 @@ html {
     #tv-load-btn:hover,
     #load-more-btn:hover,
     #search-load-more-btn:hover,
-    .play-now:hover {
+    .play-now:hover,
+    .search-results img:hover {
         /* color: inherit !important; */
         transform: none !important;
         box-shadow: none !important;
@@ -4156,7 +4157,8 @@ html {
     #tv-load-btn:hover,
     #load-more-btn:hover,
     #search-load-more-btn:hover,
-    .play-now:hover {
+    .play-now:hover,
+    .search-results img:hover {
         /* color: inherit !important; */
         transform: none !important;
         box-shadow: none !important;
