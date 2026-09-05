@@ -54,6 +54,8 @@ The project focuses on:
 
 ## 📱 Responsive Design
 
+![Cinema Cafe Responsive Showcase](preview.gif)
+
 Cinema Cafe was designed specifically for three different layouts rather than simply scaling down the desktop interface:
 
 - Desktop
