@@ -2664,10 +2664,15 @@ html {
         display: none;
     }
 
-    .rating-mobile {
-        margin-bottom: 35px;
+    .rating-mobile,
+    .mobile-star-rating {
+        margin-bottom: 0px;
         margin-left: 0px;
         display: inline-flex;
+    }
+
+    .mobile-star-rating {
+        margin-bottom: 15px;
     }
 
     .star-inline-details {
@@ -2681,6 +2686,7 @@ html {
 
     .rating-mobile .rating {
         color: #fff;
+        margin-bottom: 0px;
 
     }
 
@@ -2739,7 +2745,7 @@ html {
         color: #d1d5db;
         border-left: 3px solid #e50914;
         padding-left: 12px;
-        margin: -20px 0 0px 0;
+        margin: 0px 0 0px 0;
     }
 
 

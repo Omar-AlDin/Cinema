@@ -61,6 +61,35 @@ const loadButton = document.getElementById('load-more-btn');
 const sentinel = document.getElementById('scroll-sentinel');
 
 
+//Storage Session Movies & TV
+if (movieGrid) {
+    movieGrid.addEventListener('click', function (e) {
+        if (!e.target.closest('.poster-link')) return;
+        saveGridState('movieGrid:' + location.search, movieGrid, {
+            page: currentPage,
+            pagePause,
+            numberOfPages,
+            seen: Array.from(seenMovie),
+            filters: currentFilters
+        });
+    });
+}
+
+
+if (tvGrid) {
+    tvGrid.addEventListener('click', function (e) {
+        if (!e.target.closest('.poster-link')) return;
+        saveGridState('tvGrid:' + location.search, tvGrid, {
+            page: currentTvPage,
+            pagePause: tvPagePause,
+            numberOfPages: numberOfTvPages,
+            seen: Array.from(seenTV),
+            filters: currentFiltersTv
+        });
+    });
+}
+
+
 const checkSentinel = function () {
     if (!sentinel || isLoading || currentPage >= totalPages) return;
 
@@ -109,6 +138,44 @@ if (loadButton) {
 }
 
 
+//Session Storage
+const STATE_PREFIX = 'gatto:';
+
+const saveGridState = function (key, container, extra = {}) {
+    if (!container) return;
+    try {
+        sessionStorage.setItem(STATE_PREFIX + key, JSON.stringify({
+            html: container.innerHTML,
+            scrollY: window.scrollY,
+            savedAt: Date.now(),
+            ...extra
+        }));
+    } catch (err) {
+        console.warn(`Could not save scroll state: ${err.message}`)
+    }
+}
+
+const loadGridState = function (key, maxAgeMs = 30 * 60 * 1000) {
+    try {
+        const raw = sessionStorage.getItem(STATE_PREFIX + key)
+        if (!raw) return null;
+        const state = JSON.parse(raw);
+        if (Date.now() - state.savedAt > maxAgeMs) return null;
+        return state;
+    } catch (err) {
+        return null;
+    }
+}
+
+const clearGridState = function (key) {
+    sessionStorage.removeItem(STATE_PREFIX + key);
+}
+
+const restoreScroll = function (y) {
+    requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, y)));
+}
+
+
 //Parama
 const urlParams = new URLSearchParams(window.location.search);
 const movieId = urlParams.get('id') || '4232'
@@ -128,6 +195,7 @@ const handleFilter = function () {
         currentFetchController.abort();
     }
     currentFetchController = new AbortController();
+    clearGridState('movieGrid:' + location.search);
 
     if (movieGrid) movieGrid.innerHTML = '';
     seenMovie.clear();
@@ -241,7 +309,48 @@ const fetchMovies = async function (page = 1) {
     }
 }
 
-if (movieGrid) fetchMovies(currentPage).then(checkSentinel);
+const isBackForwardNavigation = function () {
+    const navEntries = performance.getEntriesByType('navigation');
+    if (navEntries.length > 0) {
+        return navEntries[0].type === 'back_forward';
+    }
+    return false; // fallback if the API isn't available
+};
+
+const syncMovieFilterUI = function () {
+    if (sortSelect) sortSelect.value = currentFilters.sortBy;
+    const genreSelect = document.querySelector('#genre-select');
+    if (genreSelect) genreSelect.value = currentFilters.genre;
+    const yearSelect = document.querySelector('#year-sort');
+    if (yearSelect) yearSelect.value = currentFilters.year;
+    const ratingSelect = document.querySelector('#rating-select');
+    if (ratingSelect) ratingSelect.value = currentFilters.minRating;
+    const languageSelect = document.querySelector('#language-select');
+    if (languageSelect) languageSelect.value = currentFilters.language;
+};
+
+if (movieGrid) {
+    if (isBackForwardNavigation()) {
+        const saved = loadGridState('movieGrid:' + location.search);
+        if (saved) {
+            Object.assign(currentFilters, saved.filters);
+            movieGrid.innerHTML = saved.html;
+            currentPage = saved.page;
+            pagePause = saved.pagePause;
+            numberOfPages = saved.numberOfPages;
+            seenMovie.clear();
+            saved.seen.forEach(id => seenMovie.add(id));
+            if (currentPage >= pagePause && loadButton) loadButton.style.display = 'block';
+            restoreScroll(saved.scrollY);
+            checkSentinel(); // resume infinite scroll from where it left off
+        } else {
+            fetchMovies(currentPage).then(checkSentinel);
+        }
+    } else {
+        clearGridState('movieGrid:' + location.search); // fresh nav — wipe stale snapshot
+        fetchMovies(currentPage).then(checkSentinel);
+    }
+}
 
 
 //Genre fetch
@@ -266,8 +375,7 @@ const genresMovies = async function () {
     }
 
 }
-genresMovies();
-
+genresMovies().then(syncMovieFilterUI);
 
 // Movies Filter Apply
 document.querySelector('#select-sort')?.addEventListener('change', function (e) {
@@ -353,13 +461,12 @@ if (tvBtn) {
 }
 
 const handleFilterTv = function () {
-
+    clearGridState('tvGrid:' + location.search);
 
     if (currentFetchControllerTv) {
         currentFetchControllerTv.abort();
     }
     currentFetchControllerTv = new AbortController();
-
     if (tvGrid) tvGrid.innerHTML = '';
     seenTV.clear();
     currentTvPage = 1;
@@ -434,8 +541,43 @@ const tvImage = async function (page = 1) {
 }
 
 
+//Load Session Grid
+
+
+const syncTvFilterUI = function () {
+    const tvSortSelect = document.querySelector('#tv-select-sort');
+    if (tvSortSelect) tvSortSelect.value = currentFiltersTv.sortBy;
+    const tvGenreSelect = document.querySelector('#tv-genre-select');
+    if (tvGenreSelect) tvGenreSelect.value = currentFiltersTv.genre;
+    const tvYearSelect = document.querySelector('#tv-year-sort');
+    if (tvYearSelect) tvYearSelect.value = currentFiltersTv.year;
+    const tvRatingSelect = document.querySelector('#tv-rating-select');
+    if (tvRatingSelect) tvRatingSelect.value = currentFiltersTv.minRating;
+    const tvLanguageSelect = document.querySelector('#tv-language-select');
+    if (tvLanguageSelect) tvLanguageSelect.value = currentFiltersTv.language;
+};
+
 if (tvGrid) {
-    tvImage().then(checkSentinelTv);
+    if (isBackForwardNavigation()) {
+        const savedTv = loadGridState('tvGrid:' + location.search);
+        if (savedTv) {
+            Object.assign(currentFiltersTv, savedTv.filters);
+            tvGrid.innerHTML = savedTv.html;
+            currentTvPage = savedTv.page;
+            tvPagePause = savedTv.pagePause;
+            numberOfTvPages = savedTv.numberOfPages;
+            seenTV.clear();
+            savedTv.seen.forEach(id => seenTV.add(id));
+            if (currentTvPage >= tvPagePause && tvBtn) tvBtn.style.display = 'block';
+            restoreScroll(savedTv.scrollY);
+            checkSentinelTv();
+        } else {
+            tvImage().then(checkSentinelTv);
+        }
+    } else {
+        clearGridState('tvGrid:' + location.search);
+        tvImage().then(checkSentinelTv);
+    }
 }
 
 
@@ -459,7 +601,7 @@ const genresTv = async function () {
 
 }
 
-genresTv();
+genresTv().then(syncTvFilterUI);
 // TV Shows Filter Apply
 document.querySelector('#tv-select-sort')?.addEventListener('change', function (e) {
     e.preventDefault();
@@ -507,6 +649,8 @@ const showAll = (selector) => {
 //Image URL Function
 const imageUrl = (path, size = 'original') =>
     path ? `https://image.tmdb.org/t/p/${size}${path}` : 'placeholder.jpg';
+
+
 
 
 
@@ -1216,7 +1360,32 @@ const seenSearch = new Set();
 
 
 
+if (searchResults) {
+    searchResults.addEventListener('click', function (e) {
+        if (!e.target.closest('.poster-link')) return;
+        saveGridState('search', searchResults, {
+            query: currentQuery,
+            page: currentSearchPage,
+            pagePause: searchPagePause,
+            numberOfPages: numberOfSearchPages,
+            seen: Array.from(seenSearch)
+        });
+    });
+}
 
+// Right after your DOM declarations for search, restore on load:
+const savedSearch = loadGridState('search');
+if (savedSearch && searchInput) {
+    searchInput.value = savedSearch.query;
+    currentQuery = savedSearch.query;
+    searchResults.innerHTML = savedSearch.html;
+    currentSearchPage = savedSearch.page;
+    searchPagePause = savedSearch.pagePause;
+    numberOfSearchPages = savedSearch.numberOfPages;
+    savedSearch.seen.forEach(id => seenSearch.add(id));
+    if (currentSearchPage >= searchPagePause && searchLoadBtn) searchLoadBtn.style.display = 'block';
+    restoreScroll(savedSearch.scrollY);
+}
 
 
 
