@@ -2712,7 +2712,9 @@ html {
         border-radius: 4px;
         letter-spacing: 0.6;
         vertical-align: middle;
-        margin: 5px;
+        margin: 0px;
+        margin-bottom: 20px;
+
     }
 
     .upcoming .icon-badge {

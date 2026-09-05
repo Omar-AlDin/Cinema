@@ -295,7 +295,7 @@ const fetchMovies = async function (page = 1) {
 
         })
 
-        console.log(movieData)
+        // console.log(movieData)
 
 
     } catch (err) {
@@ -512,7 +512,7 @@ const tvImage = async function (page = 1) {
         const tvRes = await fetch(tvUrl, { ...options, signal });
         if (!tvRes.ok) throw new Error(`HTTP response went wrong: ${tvRes.status}`)
         const tvData = await tvRes.json();
-        console.log("TV Data", tvData);
+        // console.log("TV Data", tvData);
 
         numberOfTvPages = tvData.total_pages;
 
@@ -596,7 +596,7 @@ const genresTv = async function () {
             genreSelect.append(option);
         })
     } catch (err) {
-        console.log(`Something went wrong: ${err.message}`)
+        console.error(`Something went wrong: ${err.message}`)
     }
 
 }
@@ -741,7 +741,7 @@ const renderDetails = function (movie) {
         `;
 
             actorsContainer.append(attore)
-            console.log("attore", attore)
+            // console.log("attore", attore)
         });
 
         const viewMoreBtn = document.createElement('button');
@@ -781,10 +781,9 @@ const isTv = window.location.pathname.includes('tv-details.html');
 const seasonScroller = document.querySelector('.season-scroller');
 const today = new Date();
 
-console.log(isTv)
+// console.log(isTv)
 const renderDetailsTv = function (tv) {
     if (!tv || tv.success == false) return;
-    console.log("Hello")
     document.querySelectorAll('.poster').forEach(el => el.src = imageUrl(tv.poster_path));
     showAll('.poster')
 
@@ -1016,7 +1015,7 @@ const loadSeason = async function (tvId = 113962, season = 1) {
         if (!seasonRes.ok) throw new Error(`HTTP error: ${seasonRes.status}`);
         const seasonData = await seasonRes.json();
         renderEpisode(seasonData);
-        console.log("season data", seasonData);
+        // console.log("season data", seasonData);
 
     } catch (err) {
         console.error(`Something went wrong: ${err.message}`)
@@ -1182,7 +1181,7 @@ const spans = function (movie) {
     const movieDate = movie.release_date;
     const releaseDate = new Date(movieDate);
     const today = new Date();
-    console.log(releaseDate, today)
+    // console.log(releaseDate, today)
     if (releaseDate <= today) {
         setAllText('.date-label', "Release Date:");
         setAllText('.date-span', formatedDateOnly(movie.release_date) || "N/A");
@@ -1238,8 +1237,8 @@ const mediaAsset = async function (movieId) {
         const imageData = await imageRes.json();
         const videoData = await videoRes.json();
 
-        console.log("ImageData", imageData)
-        console.log("VideoData", videoData)
+        // console.log("ImageData", imageData)
+        // console.log("VideoData", videoData)
 
         mediaState.backdrops = imageData.backdrops || [];
         mediaState.posters = imageData.posters || [];
@@ -1280,7 +1279,6 @@ const createBackdrops = function (backdrop, limit = 10) {
         img.classList.add('media-container');
         img.src = imageUrl(back.file_path, 'w780')
         img.alt = "Backdrop";
-        console.log("Img", img);
         return img;
     });
 
@@ -1302,7 +1300,7 @@ const createVideos = function (videos, limit = 6) {
     });
 }
 
-console.log("Create Videos", createVideos(mediaState.videos))
+// console.log("Create Videos", createVideos(mediaState.videos))
 
 
 
@@ -1359,7 +1357,7 @@ let currentQuery = '';
 const seenSearch = new Set();
 
 
-
+//Search Session Storage
 if (searchResults) {
     searchResults.addEventListener('click', function (e) {
         if (!e.target.closest('.poster-link')) return;
@@ -1373,7 +1371,6 @@ if (searchResults) {
     });
 }
 
-// Right after your DOM declarations for search, restore on load:
 const savedSearch = loadGridState('search');
 if (savedSearch && searchInput) {
     searchInput.value = savedSearch.query;
@@ -1439,10 +1436,10 @@ const fetchSearch = async function (query, page = 1) {
 
     } catch (err) {
         if (err.name === 'AbortError') {
-            console.log('Search aborted due to new query.');
+            // console.log('Search aborted due to new query.');
             return;
         }
-        console.error(`Something went wrong: ${err.message}`);
+        console.error(`Error fetching search results: ${err.message}`);
         searchResults.innerHTML = `
         <div class="search-error">
         <p>Unable to load search results. Please check your internet connection</p>
@@ -1530,7 +1527,7 @@ const detailsImage = async function () {
 
             const tvRes = await fetch(tvUrl, options);
             const tvData = await tvRes.json();
-            console.log("TV Data", tvData)
+            // console.log("TV Data", tvData)
             if (!tvRes.ok) throw new Error(`HTTP request went wrong: ${tvRes.status}`);
 
             if (backdropImageTv) {
@@ -1554,7 +1551,7 @@ const detailsImage = async function () {
             const movieRes = await fetch(moviesUrl, options)
 
             const movieData = await movieRes.json();
-            console.log(movieData)
+            // console.log(movieData)
 
             const images = formatedImage(movieData)
             // console.log(images)
@@ -1657,7 +1654,7 @@ const trailerName = function (Itemname) {
 
 
                 const mainTrailer = mediaState.videos.find(trail => trail.site === "YouTube" && trail.name === "Official Trailer" && trail.official === true) || mediaState.videos.find(trail => trail.site === "YouTube" && trail.official === true && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Trailer") || mediaState.videos.find(trail => trail.site === "YouTube" && trail.type === "Teaser");
-                console.log(mainTrailer)
+                // console.log(mainTrailer)
 
                 if (mainTrailer) {
                     openTrailer(mainTrailer)
@@ -1838,7 +1835,7 @@ const fetchHomepageBackdrops = async function () {
         );
 
         heroItems = await Promise.all(detailsPromise);
-        console.log("heroItems", heroItems);
+        // console.log("heroItems", heroItems);
 
         heroCarousel.innerHTML = '';
 
@@ -1879,14 +1876,14 @@ if (heroTrailerBtn) {
             || videoList.find(trail => trail.site === "YouTube" && trail.type === "Trailer")
             || videoList.find(trail => trail.site === "YouTube" && trail.type === "Teaser");
 
-        console.log(mainTrailer)
+        // console.log(mainTrailer)
         if (mainTrailer) {
             openTrailer(mainTrailer);
             trailerName();
         } else {
             alert("No trailer found");
         }
-        console.log(currentItem)
+        // console.log(currentItem)
 
         if (currentItem.media_type === 'tv') {
             document.querySelector('.trailer-name').textContent = `${currentItem.data.name} - ${mainTrailer.type || 'Trailer'}`
@@ -2033,14 +2030,14 @@ const renderHighlyRated = async function () {
         const movieData = await movieRes.json();
         const tvData = await tvRes.json();
 
-        console.log("Hi", movieData, tvData);
+        // console.log("Hi", movieData, tvData);
 
         const movieSliced = movieData.results.slice(0, 7);
         const tvSliced = tvData.results.slice(0, 7);
 
         const tvAndMovie = [...movieSliced, ...tvSliced];
         tvAndMovie.sort((a, b) => b.vote_average - a.vote_average);
-        console.log("TV and movie", tvAndMovie);
+        // console.log("TV and movie", tvAndMovie);
 
         tvAndMovie.forEach(item => {
             const image = document.createElement('img');
@@ -2078,7 +2075,6 @@ const renderGems = async function () {
 
         const gems = await Promise.all(request);
 
-        console.log("gems", gems);
 
         gems.forEach(item => {
             const detailsPage = item.first_air_date ? 'tv-details.html' : 'movie-details.html'
@@ -2140,7 +2136,6 @@ const renderNew = async function () {
 
         const newMovieAndTv = [...newMovieSliced, ...newTvSliced]
         newMovieAndTv.sort((a, b) => b.vote_average - a.vote_average)
-        console.log("MV", newMovieAndTv);
 
         newMovieAndTv.forEach(item => {
             const image = document.createElement('img');
@@ -2198,7 +2193,6 @@ const renderComingSoon = async function () {
         const movieAndTv = [...movieSliced, ...tvSliced];
 
         movieAndTv.sort((a, b) => b.popularity - a.popularity);
-        console.log("coming soon", movieAndTv);
 
         movieAndTv.forEach(item => {
             if (!item.poster_path) return;
