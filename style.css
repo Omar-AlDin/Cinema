@@ -575,6 +575,7 @@ nav a:hover {
     margin: 0 auto;
     padding: 15px var(--content-pad);
     max-width: var(--content-max);
+
 }
 
 .browse-container {
@@ -2170,6 +2171,13 @@ html {
 
 .footer-brand {
     max-width: 320px;
+
+}
+
+.logo-brand-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .footer-name {
@@ -2190,6 +2198,7 @@ html {
     gap: 3rem;
     flex-wrap: wrap;
     margin-right: 150px;
+    gap: 120px;
 }
 
 .link-group h4 {
@@ -2253,6 +2262,17 @@ html {
     display: none;
 }
 
+.logo {
+    width: 45px;
+    height: auto;
+    display: inline-flex;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+    position: relative;
+    top: 2px;
+
+}
 
 /* mobile */
 @media (max-width: 599px) {
@@ -3099,6 +3119,17 @@ html {
         margin-right: auto;
     }
 
+    .logo-brand-name {
+        display: grid;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .footer-name {
+        margin-top: 5px;
+
+    }
 
     .footer-links {
         flex-direction: column;
@@ -3130,6 +3161,19 @@ html {
     .link-group ul {
         margin-top: 12px;
     }
+
+    .logo {
+        width: 43px;
+        height: auto;
+        display: grid;
+        padding: 0;
+        margin: 0;
+        margin-left: 40px;
+
+        justify-content: center;
+        align-items: center;
+    }
+
 
 }
 
