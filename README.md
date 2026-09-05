@@ -6,7 +6,7 @@ Cinema Cafe combines movie and TV discovery with a cinematic interface, detailed
 
 ## 🌐 Live Demo
 
-▶️ **[Launch Cinema Cafe](https://omar-aldin.github.io/Cinema/)**
+▶️ **[Launch Cinema Cafe](https://omar-aldin.github.io/cinema-cafe/)**
 
 ## ✨ Features
 
